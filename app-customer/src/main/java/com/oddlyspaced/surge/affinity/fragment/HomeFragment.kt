@@ -30,6 +30,7 @@ class HomeFragment: Fragment(R.layout.fragment_home) {
 
         initOSMDroid()
         markCurrentLocation()
+        init()
     }
 
     // handles runtime map configuration
@@ -64,5 +65,16 @@ class HomeFragment: Fragment(R.layout.fragment_home) {
         }
         binding.map.controller.setCenter(userPoint)
         binding.map.overlays.add(marker)
+    }
+
+    private fun init() {
+        binding.selectLocationPickup.apply {
+            txSelecLocation.text = "Select pickup location"
+            imgLocation.setColorFilter(Color.RED)
+        }
+        binding.selectLocationDrop.apply {
+            txSelecLocation.text = "Select Drop Location"
+            imgLocation.setColorFilter(Color.GREEN)
+        }
     }
 }
