@@ -49,18 +49,20 @@ class HomeFragment: Fragment(R.layout.fragment_home) {
         }
 
         // zooming in by default
-        binding.map.controller.setZoom(8.0)
+        binding.map.controller.setZoom(16.0)
     }
 
     private fun markCurrentLocation() {
+        val userPoint = gpsTrackerService.fetchLocation().asGeoPoint()
         val marker = Marker(binding.map).apply {
-            position = gpsTrackerService.fetchLocation().asGeoPoint()
+            position = userPoint
             Logger.d("Current Location: ${gpsTrackerService.fetchLocation()}")
             setAnchor(Marker.ANCHOR_BOTTOM, Marker.ANCHOR_BOTTOM)
-            icon = ContextCompat.getDrawable(requireContext(), R.drawable.ic_location)?.apply { setTint(Color.RED) }
-//            setInfoWindow(CustomInfoWindow(R.layout.layout_info_window_current_location, binding.map))
+            icon = ContextCompat.getDrawable(requireContext(), R.drawable.ic_location)?.apply { setTint(Color.BLUE) }
+            setInfoWindow(null)
             showInfoWindow()
         }
+        binding.map.controller.setCenter(userPoint)
         binding.map.overlays.add(marker)
     }
 }
