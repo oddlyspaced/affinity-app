@@ -6,12 +6,16 @@ import android.preference.PreferenceManager
 import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import com.oddlyspaced.surge.affinity.BuildConfig
 import com.oddlyspaced.surge.affinity.util.Logger
 import com.oddlyspaced.surge.affinity.R
 import com.oddlyspaced.surge.affinity.databinding.FragmentHomeBinding
+import com.oddlyspaced.surge.affinity.modal.Provider
+import com.oddlyspaced.surge.affinity.modal.asGeoPoint
 import com.oddlyspaced.surge.affinity.service.GPSTrackerService
 import com.oddlyspaced.surge.affinity.util.asGeoPoint
+import com.oddlyspaced.surge.affinity.viewmodel.HomeViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import org.osmdroid.config.Configuration
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
@@ -22,8 +26,8 @@ import org.osmdroid.views.overlay.Marker
 class HomeFragment: Fragment(R.layout.fragment_home) {
 
     private lateinit var binding: FragmentHomeBinding
-
     private val gpsTrackerService by lazy { GPSTrackerService(requireContext()) }
+    private val homeViewModel: HomeViewModel by viewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         binding = FragmentHomeBinding.bind(view)
@@ -61,9 +65,17 @@ class HomeFragment: Fragment(R.layout.fragment_home) {
             setAnchor(Marker.ANCHOR_BOTTOM, Marker.ANCHOR_BOTTOM)
             icon = ContextCompat.getDrawable(requireContext(), R.drawable.ic_location)?.apply { setTint(Color.BLUE) }
             setInfoWindow(null)
-            showInfoWindow()
         }
         binding.map.controller.setCenter(userPoint)
+        binding.map.overlays.add(marker)
+    }
+
+    private fun markProvider(provider: Provider) {
+        val marker = Marker(binding.map).apply {
+            position = provider.location.asGeoPoint()
+            icon = ContextCompat.getDrawable(requireContext(), R.drawable.ic_location)?.apply { setTint(Color.RED) }
+            setInfoWindow(null)
+        }
         binding.map.overlays.add(marker)
     }
 
@@ -75,6 +87,12 @@ class HomeFragment: Fragment(R.layout.fragment_home) {
         binding.selectLocationDrop.apply {
             txSelecLocation.text = "Select Drop Location"
             imgLocation.setColorFilter(Color.GREEN)
+        }
+
+        homeViewModel.providers.observe(requireActivity()) { list ->
+            list.forEach { provider ->
+                markProvider(provider)
+            }
         }
     }
 }
