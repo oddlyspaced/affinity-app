@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.fragment.navArgs
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.google.android.material.chip.Chip
 import com.oddlyspaced.surge.affinity.databinding.LayoutBottomSheetProviderDetailsBinding
 
 class ProviderDetailsFragment: BottomSheetDialogFragment() {
@@ -30,6 +31,11 @@ class ProviderDetailsFragment: BottomSheetDialogFragment() {
         binding.apply {
             txProviderInfoName.text = provider.name
             txProviderInfoDistance.text = "13 km away" // todo: calculate real distance
+       }
+        provider.services.forEach { service ->
+            binding.chipGroupProviderInfoService.addView(Chip(requireContext()).apply {
+                text = service
+            })
         }
     }
 }

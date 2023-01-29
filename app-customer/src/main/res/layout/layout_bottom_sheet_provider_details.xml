@@ -3,8 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    tools:context=".fragment.ProviderDetailsFragment"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    tools:context=".fragment.ProviderDetailsFragment">
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
@@ -24,7 +24,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="24dp"
                 android:layout_marginEnd="8dp"
-                android:fontFamily="@font/medium"
+                android:fontFamily="@font/semi_bold"
                 android:text="Name"
                 android:textColor="@color/black"
                 android:textSize="20sp"
@@ -38,9 +38,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="32dp"
                 android:layout_marginEnd="16dp"
-                android:layout_marginBottom="64dp"
                 android:clickable="true"
-                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:srcCompat="@drawable/ic_call"
@@ -53,11 +51,37 @@
                 android:layout_marginStart="24dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
-                android:fontFamily="@font/regular"
+                android:fontFamily="@font/medium"
                 android:text="Distance:"
+                android:textSize="16sp"
                 app:layout_constraintEnd_toStartOf="@+id/floatingActionButton"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tx_provider_info_name" />
+
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/chip_group_provider_info_service"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="32dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView6" />
+
+            <TextView
+                android:id="@+id/textView6"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="8dp"
+                android:fontFamily="@font/semi_bold"
+                android:text="Services :"
+                android:textColor="@color/black"
+                android:textSize="12sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tx_provider_info_distance" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
