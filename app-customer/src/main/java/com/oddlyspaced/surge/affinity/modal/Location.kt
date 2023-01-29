@@ -1,5 +1,6 @@
 package com.oddlyspaced.surge.affinity.modal
 
+import org.osmdroid.util.GeoPoint
 import kotlin.math.*
 
 /**
@@ -22,3 +23,5 @@ fun Location.distanceTo(point: Location): Double {
 fun deg2rad(deg: Double): Double {
     return deg * (Math.PI / 180.0)
 }
+
+fun Location.asGeoPoint() = GeoPoint(this.lat, this.lon)
