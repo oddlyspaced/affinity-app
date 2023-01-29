@@ -9,5 +9,14 @@
         android:id="@+id/homeFragment"
         android:name="com.oddlyspaced.surge.affinity.fragment.HomeFragment"
         android:label="fragment_home"
-        tools:layout="@layout/fragment_home" />
+        tools:layout="@layout/fragment_home" >
+        <action
+            android:id="@+id/action_homeFragment_to_providerDetailsFragment"
+            app:destination="@id/providerDetailsFragment" />
+    </fragment>
+    <dialog
+        android:id="@+id/providerDetailsFragment"
+        android:name="com.oddlyspaced.surge.affinity.fragment.ProviderDetailsFragment"
+        android:label="layout_bottom_sheet_provider_details"
+        tools:layout="@layout/layout_bottom_sheet_provider_details" />
 </navigation>

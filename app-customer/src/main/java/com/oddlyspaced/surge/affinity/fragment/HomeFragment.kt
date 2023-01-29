@@ -7,6 +7,7 @@ import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import com.oddlyspaced.surge.affinity.BuildConfig
 import com.oddlyspaced.surge.affinity.util.Logger
 import com.oddlyspaced.surge.affinity.R
@@ -94,5 +95,7 @@ class HomeFragment: Fragment(R.layout.fragment_home) {
                 markProvider(provider)
             }
         }
+
+        findNavController().navigate(R.id.action_homeFragment_to_providerDetailsFragment)
     }
 }
