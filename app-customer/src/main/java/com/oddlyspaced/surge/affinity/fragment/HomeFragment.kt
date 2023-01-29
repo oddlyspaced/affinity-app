@@ -8,6 +8,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import com.oddlyspaced.surge.affinity.App
 import com.oddlyspaced.surge.affinity.BuildConfig
 import com.oddlyspaced.surge.affinity.util.Logger
 import com.oddlyspaced.surge.affinity.R
@@ -55,7 +56,7 @@ class HomeFragment: Fragment(R.layout.fragment_home) {
         }
 
         // zooming in by default
-        binding.map.controller.setZoom(16.0)
+        binding.map.controller.setZoom(App.DEFAULT_MAP_ZOOM)
     }
 
     private fun markCurrentLocation() {
