@@ -76,6 +76,10 @@ class HomeFragment: Fragment(R.layout.fragment_home) {
             position = provider.location.asGeoPoint()
             icon = ContextCompat.getDrawable(requireContext(), R.drawable.ic_location)?.apply { setTint(Color.RED) }
             setInfoWindow(null)
+            setOnMarkerClickListener { _, _ ->
+                findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToProviderDetailsFragment(provider))
+                return@setOnMarkerClickListener true
+            }
         }
         binding.map.overlays.add(marker)
     }
@@ -95,7 +99,5 @@ class HomeFragment: Fragment(R.layout.fragment_home) {
                 markProvider(provider)
             }
         }
-
-        findNavController().navigate(R.id.action_homeFragment_to_providerDetailsFragment)
     }
 }
