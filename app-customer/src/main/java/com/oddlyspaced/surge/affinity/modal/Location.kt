@@ -1,15 +1,18 @@
 package com.oddlyspaced.surge.affinity.modal
 
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
 import org.osmdroid.util.GeoPoint
 import kotlin.math.*
 
 /**
  * data class to hold a location representation
  */
+@Parcelize
 data class Location(
     val lat: Double,
     val lon: Double,
-)
+): Parcelable
 
 fun Location.distanceTo(point: Location): Double {
     val dLat = deg2rad(abs(this.lat - point.lat))
