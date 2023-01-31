@@ -1,7 +1,7 @@
-package com.oddlyspaced.surge.affinity.retrofit
+package com.oddlyspaced.surge.app_common.retrofit
 
 import com.google.gson.GsonBuilder
-import com.oddlyspaced.surge.affinity.App
+import com.oddlyspaced.surge.app_common.AffinityConfiguration
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -19,7 +19,7 @@ class ApiClient {
                 .connectTimeout(100, TimeUnit.SECONDS)
                 .build()
             client = Retrofit.Builder()
-                .baseUrl(App.API_URL)
+                .baseUrl(AffinityConfiguration.API_URL)
                 .client(okHttpClient)
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .build()

@@ -10,14 +10,14 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.oddlyspaced.surge.affinity.App
 import com.oddlyspaced.surge.affinity.BuildConfig
-import com.oddlyspaced.surge.affinity.util.Logger
 import com.oddlyspaced.surge.affinity.R
 import com.oddlyspaced.surge.affinity.databinding.FragmentHomeBinding
-import com.oddlyspaced.surge.affinity.modal.Provider
-import com.oddlyspaced.surge.affinity.modal.asGeoPoint
+import com.oddlyspaced.surge.app_common.modal.asGeoPoint
 import com.oddlyspaced.surge.affinity.service.GPSTrackerService
-import com.oddlyspaced.surge.affinity.util.asGeoPoint
 import com.oddlyspaced.surge.affinity.viewmodel.HomeViewModel
+import com.oddlyspaced.surge.app_common.AffinityConfiguration
+import com.oddlyspaced.surge.app_common.Logger
+import com.oddlyspaced.surge.app_common.asGeoPoint
 import dagger.hilt.android.AndroidEntryPoint
 import org.osmdroid.config.Configuration
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
@@ -56,7 +56,7 @@ class HomeFragment: Fragment(R.layout.fragment_home) {
         }
 
         // zooming in by default
-        binding.map.controller.setZoom(App.DEFAULT_MAP_ZOOM)
+        binding.map.controller.setZoom(AffinityConfiguration.DEFAULT_MAP_ZOOM)
     }
 
     private fun markCurrentLocation() {
@@ -65,17 +65,17 @@ class HomeFragment: Fragment(R.layout.fragment_home) {
             position = userPoint
             Logger.d("Current Location: ${gpsTrackerService.fetchLocation()}")
             setAnchor(Marker.ANCHOR_BOTTOM, Marker.ANCHOR_BOTTOM)
-            icon = ContextCompat.getDrawable(requireContext(), R.drawable.ic_location)?.apply { setTint(Color.BLUE) }
+            icon = ContextCompat.getDrawable(requireContext(), com.oddlyspaced.surge.app_common.R.drawable.ic_location)?.apply { setTint(Color.BLUE) }
             setInfoWindow(null)
         }
         binding.map.controller.setCenter(userPoint)
         binding.map.overlays.add(marker)
     }
 
-    private fun markProvider(provider: Provider) {
+    private fun markProvider(provider: com.oddlyspaced.surge.app_common.modal.Provider) {
         val marker = Marker(binding.map).apply {
             position = provider.location.asGeoPoint()
-            icon = ContextCompat.getDrawable(requireContext(), R.drawable.ic_location)?.apply { setTint(Color.RED) }
+            icon = ContextCompat.getDrawable(requireContext(), com.oddlyspaced.surge.app_common.R.drawable.ic_location)?.apply { setTint(Color.RED) }
             setInfoWindow(null)
             setOnMarkerClickListener { _, _ ->
                 findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToProviderDetailsFragment(provider))

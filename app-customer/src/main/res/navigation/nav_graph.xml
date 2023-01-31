@@ -21,6 +21,6 @@
         tools:layout="@layout/layout_bottom_sheet_provider_details">
         <argument
             android:name="provider"
-            app:argType="com.oddlyspaced.surge.affinity.modal.Provider" />
+            app:argType="com.oddlyspaced.surge.app_common.modal.Provider" />
     </dialog>
 </navigation>

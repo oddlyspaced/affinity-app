@@ -11,7 +11,7 @@ import android.location.LocationListener
 import android.location.LocationManager
 import android.os.IBinder
 import androidx.core.app.ActivityCompat
-import com.oddlyspaced.surge.affinity.util.Logger
+import com.oddlyspaced.surge.app_common.Logger
 
 
 class GPSTrackerService(private val context: Context) : Service(), LocationListener {
