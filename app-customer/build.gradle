@@ -67,6 +67,8 @@ dependencies {
 
     // Co routines
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4"
+
+    implementation project(':app-common')
 }
 
 // Allow references to generated code
