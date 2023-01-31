@@ -1,8 +1,11 @@
 package com.oddlyspaced.surge.app_provider.fragment
 
+import android.graphics.Color
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.view.View
+import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import arrow.core.left
 import com.freelapp.libs.locationfetcher.LocationFetcher
@@ -13,6 +16,7 @@ import com.oddlyspaced.surge.app_provider.BuildConfig
 import com.oddlyspaced.surge.app_provider.R
 import com.oddlyspaced.surge.app_provider.databinding.FragmentHomeBinding
 import com.oddlyspaced.surge.app_provider.util.Logger
+import com.oddlyspaced.surge.app_provider.util.asGeoPoint
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -21,6 +25,7 @@ import kotlinx.coroutines.launch
 import org.osmdroid.config.Configuration
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.views.CustomZoomButtonsController
+import org.osmdroid.views.overlay.Marker
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
 
@@ -28,7 +33,7 @@ import kotlin.time.Duration.Companion.seconds
 class HomeFragment : Fragment(R.layout.fragment_home) {
 
     private lateinit var binding: FragmentHomeBinding
-    val locationFetcher = locationFetcher("We need your permission to use your location for showing nearby items") {
+    private val locationFetcher = locationFetcher("We need your permission to use your location for showing nearby items") {
         fastestInterval = 5.seconds
         interval = 15.seconds
         maxWaitTime = 2.minutes
@@ -49,22 +54,12 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
         initOSMDroid()
         CoroutineScope(Dispatchers.IO).launch {
-            ok()
+            markCurrentLocation()
         }
 
 
 //        markCurrentLocation()
 //        init()
-    }
-
-    private suspend fun ok() {
-        locationFetcher.location.collectLatest {
-            it.fold({ error ->
-                Logger.d("ERROR: $error")
-            }, { location ->
-                Logger.d("LOCATION: " + location.latitude + " " + location.longitude)
-            })
-        }
     }
 
     // handles runtime map configuration
@@ -87,18 +82,27 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         binding.map.controller.setZoom(App.DEFAULT_MAP_ZOOM)
     }
 
-//    private fun markCurrentLocation() {
-//        val userPoint = gpsTrackerService.fetchLocation().asGeoPoint()
-//        val marker = Marker(binding.map).apply {
-//            position = userPoint
-//            Logger.d("Current Location: ${gpsTrackerService.fetchLocation()}")
-//            setAnchor(Marker.ANCHOR_BOTTOM, Marker.ANCHOR_BOTTOM)
-//            icon = ContextCompat.getDrawable(requireContext(), R.drawable.ic_location)?.apply { setTint(Color.BLUE) }
-//            setInfoWindow(null)
-//        }
-//        binding.map.controller.setCenter(userPoint)
-//        binding.map.overlays.add(marker)
-//    }
+    private suspend fun markCurrentLocation() {
+        locationFetcher.location.collectLatest {
+            it.fold({ error ->
+                Toast.makeText(requireContext(), "Error occurred while fetching location.", Toast.LENGTH_SHORT).show()
+                Logger.d("ERROR: $error")
+            }, { location ->
+                val userPoint = location.asGeoPoint()
+                val marker = Marker(binding.map).apply {
+                    position = userPoint
+                    setAnchor(Marker.ANCHOR_BOTTOM, Marker.ANCHOR_BOTTOM)
+                    icon = ContextCompat.getDrawable(requireContext(), R.drawable.ic_location)?.apply { setTint(Color.BLUE) }
+                    setInfoWindow(null)
+                }
+                requireActivity().runOnUiThread {
+                    binding.map.controller.setCenter(userPoint)
+                    binding.map.overlays.add(marker)
+                }
+            })
+        }
+
+    }
 
 //    private fun init() {
 //        binding.selectLocationPickup.apply {
