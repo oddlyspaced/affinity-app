@@ -7,16 +7,15 @@ import android.view.View
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import arrow.core.left
 import com.freelapp.libs.locationfetcher.LocationFetcher
 import com.freelapp.libs.locationfetcher.locationFetcher
 import com.google.android.gms.location.LocationRequest
-import com.oddlyspaced.surge.app_provider.App
+import com.oddlyspaced.surge.app_common.AffinityConfiguration
+import com.oddlyspaced.surge.app_common.Logger
+import com.oddlyspaced.surge.app_common.asGeoPoint
 import com.oddlyspaced.surge.app_provider.BuildConfig
 import com.oddlyspaced.surge.app_provider.R
 import com.oddlyspaced.surge.app_provider.databinding.FragmentHomeBinding
-import com.oddlyspaced.surge.app_provider.util.Logger
-import com.oddlyspaced.surge.app_provider.util.asGeoPoint
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -79,7 +78,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         }
 
         // zooming in by default
-        binding.map.controller.setZoom(App.DEFAULT_MAP_ZOOM)
+        binding.map.controller.setZoom(AffinityConfiguration.DEFAULT_MAP_ZOOM)
     }
 
     private suspend fun markCurrentLocation() {
@@ -92,7 +91,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                 val marker = Marker(binding.map).apply {
                     position = userPoint
                     setAnchor(Marker.ANCHOR_BOTTOM, Marker.ANCHOR_BOTTOM)
-                    icon = ContextCompat.getDrawable(requireContext(), R.drawable.ic_location)?.apply { setTint(Color.BLUE) }
+                    icon = ContextCompat.getDrawable(requireContext(), com.oddlyspaced.surge.app_common.R.drawable.ic_location)?.apply { setTint(Color.BLUE) }
                     setInfoWindow(null)
                 }
                 requireActivity().runOnUiThread {

@@ -71,6 +71,8 @@ dependencies {
 
     // location fetcher
     implementation("app.freel:locationfetcher:9.0.0")
+
+    implementation project(':app-common')
 }
 
 // Allow references to generated code
