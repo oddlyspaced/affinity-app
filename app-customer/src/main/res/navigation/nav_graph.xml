@@ -13,6 +13,9 @@
         <action
             android:id="@+id/action_homeFragment_to_providerDetailsFragment"
             app:destination="@id/providerDetailsFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_pickLocationFragment"
+            app:destination="@id/pickLocationFragment" />
     </fragment>
     <dialog
         android:id="@+id/providerDetailsFragment"
@@ -23,4 +26,8 @@
             android:name="provider"
             app:argType="com.oddlyspaced.surge.app_common.modal.Provider" />
     </dialog>
+    <fragment
+        android:id="@+id/pickLocationFragment"
+        android:name="com.oddlyspaced.surge.affinity.fragment.PickLocationFragment"
+        android:label="PickLocationFragment" />
 </navigation>

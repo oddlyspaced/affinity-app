@@ -31,6 +31,12 @@ class HomeFragment: Fragment(R.layout.fragment_home) {
     private val gpsTrackerService by lazy { GPSTrackerService(requireContext()) }
     private val homeViewModel: HomeViewModel by viewModels()
 
+    // stores state of home fragment
+    private enum class HomeState {
+        DEFAULT, PICKING_PICKUP, PICKING_DROP
+    }
+    private var currentState = HomeState.DEFAULT
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         binding = FragmentHomeBinding.bind(view)
 
@@ -89,6 +95,9 @@ class HomeFragment: Fragment(R.layout.fragment_home) {
         binding.selectLocationPickup.apply {
             txSelecLocation.text = "Select pickup location"
             imgLocation.setColorFilter(Color.RED)
+            root.setOnClickListener {
+                findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToPickLocationFragment())
+            }
         }
         binding.selectLocationDrop.apply {
             txSelecLocation.text = "Select Drop Location"
