@@ -1,4 +1,4 @@
-package com.oddlyspaced.surge.affinity.modal
+package com.oddlyspaced.surge.app_common.modal
 
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
