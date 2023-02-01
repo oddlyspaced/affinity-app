@@ -82,7 +82,7 @@ class HomeFragment: Fragment(R.layout.fragment_home) {
     private fun markProvider(provider: com.oddlyspaced.surge.app_common.modal.Provider) {
         val marker = Marker(binding.map).apply {
             position = provider.location.asGeoPoint()
-            icon = ContextCompat.getDrawable(requireContext(), com.oddlyspaced.surge.app_common.R.drawable.ic_location)?.apply { setTint(Color.RED) }
+            icon = ContextCompat.getDrawable(requireContext(), com.oddlyspaced.surge.app_common.R.drawable.ic_location)?.apply { setTint(Color.BLACK) }
             setInfoWindow(null)
             setOnMarkerClickListener { _, _ ->
                 findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToProviderDetailsFragment(provider))
