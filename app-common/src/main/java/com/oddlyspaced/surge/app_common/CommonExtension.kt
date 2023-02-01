@@ -18,3 +18,4 @@ fun IGeoPoint?.asGeoPoint() = GeoPoint(this?.latitude ?: 0.0, this?.longitude ?:
 fun Context.toast(text: String, length: Int = Toast.LENGTH_SHORT) {
     Toast.makeText(this, text, length).show()
 }
+fun GeoPoint.asLocation() = com.oddlyspaced.surge.app_common.modal.Location(this.latitude, this.longitude)
