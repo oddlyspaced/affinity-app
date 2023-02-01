@@ -16,6 +16,9 @@
         <action
             android:id="@+id/action_homeFragment_to_pickLocationFragment"
             app:destination="@id/pickLocationFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_searchFragment"
+            app:destination="@id/searchFragment" />
     </fragment>
     <dialog
         android:id="@+id/providerDetailsFragment"
@@ -35,4 +38,9 @@
             android:name="pickup_type"
             app:argType="com.oddlyspaced.surge.affinity.viewmodel.LocationType" />
     </fragment>
+    <fragment
+        android:id="@+id/searchFragment"
+        android:name="com.oddlyspaced.surge.affinity.fragment.SearchFragment"
+        android:label="fragment_search"
+        tools:layout="@layout/fragment_search" />
 </navigation>
