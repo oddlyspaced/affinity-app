@@ -11,6 +11,7 @@ import javax.inject.Inject
 class HomeViewModel @Inject constructor(private val repo: ProviderRepository, private val locationRepository: LocationRepository): ViewModel() {
     val providers = repo.providers()
     var pickupLocation: Location? = null
+    var pickupLocationAddress = ""
     var dropLocation: Location? = null
     fun addressFromLocation(location: Location, zoom: Int) = locationRepository.address(location, zoom)
 }
