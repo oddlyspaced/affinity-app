@@ -9,6 +9,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.oddlyspaced.surge.affinity.BuildConfig
 import com.oddlyspaced.surge.affinity.R
 import com.oddlyspaced.surge.affinity.databinding.FragmentPickLocationBinding
@@ -19,7 +20,6 @@ import com.oddlyspaced.surge.app_common.Logger
 import com.oddlyspaced.surge.app_common.asGeoPoint
 import com.oddlyspaced.surge.app_common.asLocation
 import com.oddlyspaced.surge.app_common.modal.*
-import com.oddlyspaced.surge.app_common.modal.asGeoPoint
 import dagger.hilt.android.AndroidEntryPoint
 import org.osmdroid.config.Configuration
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
@@ -36,9 +36,10 @@ class PickLocationFragment : Fragment(R.layout.fragment_pick_location) {
     private val gpsTrackerService by lazy { GPSTrackerService(requireContext()) }
 
     private val vm: HomeViewModel by activityViewModels()
-    private var currentLocation: GeoPoint? = null
-    private var currentLocationAddress = ""
+    private var currentAddress: Address? = null
     private var currentMarker: Marker? = null
+
+    private val args: PickLocationFragmentArgs by navArgs()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         binding = FragmentPickLocationBinding.bind(view)
@@ -100,7 +101,6 @@ class PickLocationFragment : Fragment(R.layout.fragment_pick_location) {
             override fun onSingleTapConfirmed(e: MotionEvent, mapView: MapView): Boolean {
                 val projection = binding.map.projection
                 val loc = projection.fromPixels(e.x.toInt(), e.y.toInt())
-                currentLocation = loc.asGeoPoint()
                 setAddressForLocation(loc.asGeoPoint().asLocation())
                 Logger.d("${loc.latitude} | ${loc.longitude}")
                 binding.map.controller.setCenter(loc.asGeoPoint())
@@ -113,9 +113,8 @@ class PickLocationFragment : Fragment(R.layout.fragment_pick_location) {
 
     private fun init() {
         binding.cardButtonSaveLocation.setOnClickListener {
-            currentLocation?.let { loc ->
-                vm.pickupLocation = Location(loc.latitude, loc.longitude)
-                vm.pickupLocationAddress = currentLocationAddress
+            currentAddress?.let { address ->
+                vm.selectedLocation[args.pickupType] = address
             }
             findNavController().popBackStack()
         }
@@ -125,7 +124,7 @@ class PickLocationFragment : Fragment(R.layout.fragment_pick_location) {
         binding.txPickerAddress.text = "Loading..."
         vm.addressFromLocation(location, binding.map.zoomLevelDouble.toInt()).observe(requireActivity()) { result ->
             binding.txPickerAddress.text = result.displayName + "\n" + "lat: ${location.lat}, lon: ${location.lon}"
-            currentLocationAddress = result.displayName ?: ""
+            currentAddress = Address(location, result.displayName ?: "${location.lat}, ${location.lon}")
         }
     }
 
