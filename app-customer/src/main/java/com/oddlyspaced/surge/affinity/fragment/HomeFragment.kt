@@ -6,6 +6,7 @@ import android.preference.PreferenceManager
 import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.oddlyspaced.surge.affinity.App
@@ -29,7 +30,7 @@ class HomeFragment: Fragment(R.layout.fragment_home) {
 
     private lateinit var binding: FragmentHomeBinding
     private val gpsTrackerService by lazy { GPSTrackerService(requireContext()) }
-    private val homeViewModel: HomeViewModel by viewModels()
+    private val homeViewModel: HomeViewModel by activityViewModels()
 
     // stores state of home fragment
     private enum class HomeState {
@@ -109,5 +110,11 @@ class HomeFragment: Fragment(R.layout.fragment_home) {
                 markProvider(provider)
             }
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        Logger.d("Resumed Home Fragment")
+        Logger.d("${homeViewModel.pickupLocation}")
     }
 }
