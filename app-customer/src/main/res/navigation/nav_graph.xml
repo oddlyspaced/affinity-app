@@ -28,6 +28,11 @@
     </dialog>
     <fragment
         android:id="@+id/pickLocationFragment"
+        tools:layout="@layout/fragment_pick_location"
         android:name="com.oddlyspaced.surge.affinity.fragment.PickLocationFragment"
-        android:label="PickLocationFragment" />
+        android:label="PickLocationFragment" >
+        <argument
+            android:name="pickup_type"
+            app:argType="com.oddlyspaced.surge.affinity.viewmodel.LocationType" />
+    </fragment>
 </navigation>
