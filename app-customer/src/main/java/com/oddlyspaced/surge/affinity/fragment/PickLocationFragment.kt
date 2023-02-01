@@ -17,6 +17,7 @@ import com.oddlyspaced.surge.affinity.viewmodel.HomeViewModel
 import com.oddlyspaced.surge.app_common.AffinityConfiguration
 import com.oddlyspaced.surge.app_common.Logger
 import com.oddlyspaced.surge.app_common.asGeoPoint
+import com.oddlyspaced.surge.app_common.asLocation
 import com.oddlyspaced.surge.app_common.modal.*
 import com.oddlyspaced.surge.app_common.modal.asGeoPoint
 import dagger.hilt.android.AndroidEntryPoint
@@ -99,6 +100,7 @@ class PickLocationFragment : Fragment(R.layout.fragment_pick_location) {
                 val projection = binding.map.projection
                 val loc = projection.fromPixels(e.x.toInt(), e.y.toInt())
                 currentLocation = loc.asGeoPoint()
+                setAddressForLocation(loc.asGeoPoint().asLocation())
                 Logger.d("${loc.latitude} | ${loc.longitude}")
                 binding.map.controller.setCenter(loc.asGeoPoint())
                 addMarker(loc.asGeoPoint())
@@ -116,4 +118,12 @@ class PickLocationFragment : Fragment(R.layout.fragment_pick_location) {
             findNavController().popBackStack()
         }
     }
+
+    private fun setAddressForLocation(location: Location) {
+        binding.txPickerAddress.text = "Loading..."
+        vm.addressFromLocation(location, binding.map.zoomLevelDouble.toInt()).observe(requireActivity()) { result ->
+            binding.txPickerAddress.text = result.displayName + "\n" + "lat: ${location.lat}, lon: ${location.lon}"
+        }
+    }
+
 }
