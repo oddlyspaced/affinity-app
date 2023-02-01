@@ -16,6 +16,7 @@ import com.oddlyspaced.surge.affinity.databinding.FragmentHomeBinding
 import com.oddlyspaced.surge.app_common.modal.asGeoPoint
 import com.oddlyspaced.surge.affinity.service.GPSTrackerService
 import com.oddlyspaced.surge.affinity.viewmodel.HomeViewModel
+import com.oddlyspaced.surge.affinity.viewmodel.LocationType
 import com.oddlyspaced.surge.app_common.AffinityConfiguration
 import com.oddlyspaced.surge.app_common.Logger
 import com.oddlyspaced.surge.app_common.asGeoPoint
@@ -97,12 +98,15 @@ class HomeFragment: Fragment(R.layout.fragment_home) {
             txSelecLocation.text = "Select pickup location"
             imgLocation.setColorFilter(Color.RED)
             root.setOnClickListener {
-                findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToPickLocationFragment())
+                findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToPickLocationFragment(LocationType.PICKUP))
             }
         }
         binding.selectLocationDrop.apply {
             txSelecLocation.text = "Select Drop Location"
             imgLocation.setColorFilter(Color.GREEN)
+            root.setOnClickListener {
+                findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToPickLocationFragment(LocationType.DROP))
+            }
         }
 
         homeViewModel.providers.observe(requireActivity()) { list ->
@@ -113,22 +117,36 @@ class HomeFragment: Fragment(R.layout.fragment_home) {
     }
 
     private var pickupMarker: Marker? = null
+    private var dropMarker: Marker? = null
+
     override fun onResume() {
         super.onResume()
         Logger.d("Resumed Home Fragment")
-        Logger.d("${homeViewModel.pickupLocation}")
 
-        homeViewModel.pickupLocation?.let { pickupLoc ->
-            binding.selectLocationPickup.txSelecLocation.text = homeViewModel.pickupLocationAddress
-            pickupMarker?.let { pickupMark ->
-                binding.map.overlays.remove(pickupMark)
+        homeViewModel.selectedLocation[LocationType.PICKUP]?.let { address ->
+            binding.selectLocationPickup.txSelecLocation.text = address.address
+            pickupMarker?.let { pickupMarker ->
+                binding.map.overlays.remove(pickupMarker)
             }
             pickupMarker = Marker(binding.map).apply {
-                position = pickupLoc.asGeoPoint()
+                position = address.location.asGeoPoint()
                 icon = ContextCompat.getDrawable(requireContext(), com.oddlyspaced.surge.app_common.R.drawable.ic_location)?.apply { setTint(Color.RED) }
                 setInfoWindow(null)
             }
             binding.map.overlays.add(pickupMarker)
+        }
+
+        homeViewModel.selectedLocation[LocationType.DROP]?.let { address ->
+            binding.selectLocationDrop.txSelecLocation.text = address.address
+            dropMarker?.let { dropMark ->
+                binding.map.overlays.remove(dropMark)
+            }
+            dropMarker = Marker(binding.map).apply {
+                position = address.location.asGeoPoint()
+                icon = ContextCompat.getDrawable(requireContext(), com.oddlyspaced.surge.app_common.R.drawable.ic_location)?.apply { setTint(Color.GREEN) }
+                setInfoWindow(null)
+            }
+            binding.map.overlays.add(dropMarker)
         }
     }
 }
