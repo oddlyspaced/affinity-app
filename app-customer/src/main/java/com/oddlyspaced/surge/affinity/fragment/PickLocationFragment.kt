@@ -37,6 +37,7 @@ class PickLocationFragment : Fragment(R.layout.fragment_pick_location) {
 
     private val vm: HomeViewModel by activityViewModels()
     private var currentLocation: GeoPoint? = null
+    private var currentLocationAddress = ""
     private var currentMarker: Marker? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -114,6 +115,7 @@ class PickLocationFragment : Fragment(R.layout.fragment_pick_location) {
         binding.cardButtonSaveLocation.setOnClickListener {
             currentLocation?.let { loc ->
                 vm.pickupLocation = Location(loc.latitude, loc.longitude)
+                vm.pickupLocationAddress = currentLocationAddress
             }
             findNavController().popBackStack()
         }
@@ -123,6 +125,7 @@ class PickLocationFragment : Fragment(R.layout.fragment_pick_location) {
         binding.txPickerAddress.text = "Loading..."
         vm.addressFromLocation(location, binding.map.zoomLevelDouble.toInt()).observe(requireActivity()) { result ->
             binding.txPickerAddress.text = result.displayName + "\n" + "lat: ${location.lat}, lon: ${location.lon}"
+            currentLocationAddress = result.displayName ?: ""
         }
     }
 

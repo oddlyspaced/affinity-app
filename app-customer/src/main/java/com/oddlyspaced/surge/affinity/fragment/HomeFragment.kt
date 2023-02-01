@@ -112,9 +112,23 @@ class HomeFragment: Fragment(R.layout.fragment_home) {
         }
     }
 
+    private var pickupMarker: Marker? = null
     override fun onResume() {
         super.onResume()
         Logger.d("Resumed Home Fragment")
         Logger.d("${homeViewModel.pickupLocation}")
+
+        homeViewModel.pickupLocation?.let { pickupLoc ->
+            binding.selectLocationPickup.txSelecLocation.text = homeViewModel.pickupLocationAddress
+            pickupMarker?.let { pickupMark ->
+                binding.map.overlays.remove(pickupMark)
+            }
+            pickupMarker = Marker(binding.map).apply {
+                position = pickupLoc.asGeoPoint()
+                icon = ContextCompat.getDrawable(requireContext(), com.oddlyspaced.surge.app_common.R.drawable.ic_location)?.apply { setTint(Color.RED) }
+                setInfoWindow(null)
+            }
+            binding.map.overlays.add(pickupMarker)
+        }
     }
 }
