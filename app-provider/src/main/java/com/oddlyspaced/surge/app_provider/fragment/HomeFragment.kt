@@ -55,10 +55,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         CoroutineScope(Dispatchers.IO).launch {
             markCurrentLocation()
         }
-
-
-//        markCurrentLocation()
-//        init()
+        init()
     }
 
     // handles runtime map configuration
@@ -103,20 +100,12 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
     }
 
-//    private fun init() {
-//        binding.selectLocationPickup.apply {
-//            txSelecLocation.text = "Select pickup location"
-//            imgLocation.setColorFilter(Color.RED)
-//        }
-//        binding.selectLocationDrop.apply {
-//            txSelecLocation.text = "Select Drop Location"
-//            imgLocation.setColorFilter(Color.GREEN)
-//        }
-//
-//        homeViewModel.providers.observe(requireActivity()) { list ->
-//            list.forEach { provider ->
-//                markProvider(provider)
-//            }
-//        }
-//    }
+    private fun init() {
+        binding.fabMarkCurrent.setOnClickListener {
+            CoroutineScope(Dispatchers.IO).launch {
+                markCurrentLocation()
+            }
+        }
+    }
+
 }
