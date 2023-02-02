@@ -23,6 +23,7 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.osmdroid.config.Configuration
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
+import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.CustomZoomButtonsController
 import org.osmdroid.views.overlay.Marker
 import kotlin.time.Duration.Companion.minutes
@@ -30,6 +31,8 @@ import kotlin.time.Duration.Companion.seconds
 
 @AndroidEntryPoint
 class HomeFragment : Fragment(R.layout.fragment_home) {
+
+    private lateinit var userLocationMarker: Marker
 
     private lateinit var binding: FragmentHomeBinding
     private val locationFetcher = locationFetcher("We need your permission to use your location for showing nearby items") {
@@ -85,7 +88,12 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                 Logger.d("ERROR: $error")
             }, { location ->
                 val userPoint = location.asGeoPoint()
-                val marker = Marker(binding.map).apply {
+                if (this@HomeFragment::userLocationMarker.isInitialized) {
+                    requireActivity().runOnUiThread {
+                        binding.map.overlays.remove(userLocationMarker)
+                    }
+                }
+                userLocationMarker = Marker(binding.map).apply {
                     position = userPoint
                     setAnchor(Marker.ANCHOR_BOTTOM, Marker.ANCHOR_BOTTOM)
                     icon = ContextCompat.getDrawable(requireContext(), com.oddlyspaced.surge.app_common.R.drawable.ic_location)?.apply { setTint(Color.BLUE) }
@@ -93,7 +101,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                 }
                 requireActivity().runOnUiThread {
                     binding.map.controller.setCenter(userPoint)
-                    binding.map.overlays.add(marker)
+                    binding.map.overlays.add(userLocationMarker)
                 }
             })
         }
