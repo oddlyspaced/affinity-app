@@ -10,6 +10,8 @@ import androidx.fragment.app.Fragment
 import com.freelapp.libs.locationfetcher.LocationFetcher
 import com.freelapp.libs.locationfetcher.locationFetcher
 import com.google.android.gms.location.LocationRequest
+import com.google.android.material.slider.Slider
+import com.google.android.material.slider.Slider.OnSliderTouchListener
 import com.oddlyspaced.surge.affinity.BuildConfig
 import com.oddlyspaced.surge.affinity.R
 import com.oddlyspaced.surge.affinity.databinding.FragmentSearchBinding
@@ -22,14 +24,17 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.osmdroid.config.Configuration
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
+import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.CustomZoomButtonsController
 import org.osmdroid.views.overlay.Marker
+import org.osmdroid.views.overlay.Polygon
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
 
 class SearchFragment: Fragment(R.layout.fragment_search) {
 
     private lateinit var binding: FragmentSearchBinding
+    private lateinit var currentLocationGeoPoint: GeoPoint
 
     private val currentLocationFetcher = locationFetcher("We need your permission to use your location for showing nearby items") {
         fastestInterval = 5.seconds
@@ -62,6 +67,14 @@ class SearchFragment: Fragment(R.layout.fragment_search) {
                 binding.textSearchDistance.text = "${value.toInt()} km"
             }
         }
+        binding.sliderSearchDistance.addOnSliderTouchListener(object : OnSliderTouchListener {
+            override fun onStartTrackingTouch(slider: Slider) {}
+
+            override fun onStopTrackingTouch(slider: Slider) {
+                createCircleAroundPoint(currentLocationGeoPoint, slider.value.toDouble())
+            }
+
+        })
     }
 
     private fun initOSMDroid() {
@@ -89,19 +102,47 @@ class SearchFragment: Fragment(R.layout.fragment_search) {
                 Toast.makeText(requireContext(), "Error occurred while fetching location", Toast.LENGTH_SHORT).show()
                 Logger.d("Error while fetching location in SearchFragment: $error")
             }, { location ->
-                val userPoint = location.asGeoPoint()
+                currentLocationGeoPoint = location.asGeoPoint()
                 val marker = Marker(binding.map).apply {
-                    position = userPoint
+                    position = currentLocationGeoPoint
                     setAnchor(Marker.ANCHOR_BOTTOM, Marker.ANCHOR_BOTTOM)
                     icon = ContextCompat.getDrawable(requireContext(), com.oddlyspaced.surge.app_common.R.drawable.ic_location)?.apply { setTint(Color.BLUE) }
                     setInfoWindow(null)
                 }
                 requireActivity().runOnUiThread {
-                    binding.map.controller.setCenter(userPoint)
+                    binding.map.controller.setCenter(currentLocationGeoPoint)
                     binding.map.overlays.add(marker)
                 }
             })
         }
+    }
+
+    private val polygonGeoPoints = arrayListOf<GeoPoint>()
+    private lateinit var areaPolygon: Polygon
+
+    private fun createCircleAroundPoint(point: GeoPoint, radius: Double) {
+        Logger.d("Drawing circle for $point")
+        polygonGeoPoints.clear()
+        for (i in 0 until 360) {
+            polygonGeoPoints.add(point.destinationPoint(radius * 1000, i.toDouble()))
+        }
+        handlePolygon()
+    }
+
+    private fun handlePolygon() {
+        if (this::areaPolygon.isInitialized) {
+            binding.map.overlayManager.remove(areaPolygon)
+        }
+        areaPolygon = Polygon().apply {
+            title = "Sample Title"
+            fillPaint.color = Color.BLUE
+            fillPaint.alpha = 128
+            outlinePaint.color = Color.BLACK
+            isVisible = true
+            points = polygonGeoPoints
+        }
+        binding.map.overlayManager.add(areaPolygon)
+        binding.map.invalidate()
     }
 
 }
