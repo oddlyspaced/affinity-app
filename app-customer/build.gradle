@@ -68,6 +68,9 @@ dependencies {
     // Co routines
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4"
 
+    // location fetcher
+    implementation("app.freel:locationfetcher:9.0.0")
+
     implementation project(':app-common')
 }
 
