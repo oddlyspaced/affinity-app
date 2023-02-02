@@ -109,6 +109,10 @@ class HomeFragment: Fragment(R.layout.fragment_home) {
             }
         }
 
+        binding.cardHomeSearch.setOnClickListener {
+            findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToSearchFragment())
+        }
+
         homeViewModel.providers.observe(requireActivity()) { list ->
             list.forEach { provider ->
                 markProvider(provider)
