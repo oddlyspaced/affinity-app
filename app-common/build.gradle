@@ -7,7 +7,7 @@ plugins {
 }
 
 android {
-    namespace 'com.oddlyspaced.surge.app_common'
+    namespace 'com.oddlyspaced.surge.app.common'
     compileSdk 33
 
     defaultConfig {

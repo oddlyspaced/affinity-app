@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/homeFragment"
-        android:name="com.oddlyspaced.surge.app_provider.fragment.HomeFragment"
+        android:name="com.oddlyspaced.surge.app.provider.fragment.HomeFragment"
         android:label="fragment_home"
         tools:layout="@layout/fragment_home" >
         <action
@@ -16,7 +16,7 @@
     </fragment>
     <fragment
         android:id="@+id/editFragment"
-        android:name="com.oddlyspaced.surge.app_provider.fragment.EditFragment"
+        android:name="com.oddlyspaced.surge.app.provider.fragment.EditFragment"
         android:label="fragment_edit"
         tools:layout="@layout/fragment_edit" />
 

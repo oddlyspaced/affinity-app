@@ -8,11 +8,11 @@ plugins {
 }
 
 android {
-    namespace 'com.oddlyspaced.surge.app_provider'
+    namespace 'com.oddlyspaced.surge.app.provider'
     compileSdk 33
 
     defaultConfig {
-        applicationId "com.oddlyspaced.surge.app_provider"
+        applicationId "com.oddlyspaced.surge.app.provider"
         minSdk 28
         targetSdk 33
         versionCode 1
