@@ -7,19 +7,17 @@ import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
-import com.oddlyspaced.surge.affinity.App
 import com.oddlyspaced.surge.affinity.BuildConfig
 import com.oddlyspaced.surge.affinity.R
 import com.oddlyspaced.surge.affinity.databinding.FragmentHomeBinding
-import com.oddlyspaced.surge.app_common.modal.asGeoPoint
 import com.oddlyspaced.surge.affinity.service.GPSTrackerService
 import com.oddlyspaced.surge.affinity.viewmodel.HomeViewModel
 import com.oddlyspaced.surge.affinity.viewmodel.LocationType
 import com.oddlyspaced.surge.app_common.AffinityConfiguration
 import com.oddlyspaced.surge.app_common.Logger
 import com.oddlyspaced.surge.app_common.asGeoPoint
+import com.oddlyspaced.surge.app_common.modal.asGeoPoint
 import dagger.hilt.android.AndroidEntryPoint
 import org.osmdroid.config.Configuration
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
@@ -95,14 +93,14 @@ class HomeFragment: Fragment(R.layout.fragment_home) {
 
     private fun init() {
         binding.selectLocationPickup.apply {
-            txSelecLocation.text = "Select pickup location"
+            txSelectLocation.text = "Select pickup location"
             imgLocation.setColorFilter(Color.RED)
             root.setOnClickListener {
                 findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToPickLocationFragment(LocationType.PICKUP))
             }
         }
         binding.selectLocationDrop.apply {
-            txSelecLocation.text = "Select Drop Location"
+            txSelectLocation.text = "Select Drop Location"
             imgLocation.setColorFilter(Color.GREEN)
             root.setOnClickListener {
                 findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToPickLocationFragment(LocationType.DROP))
@@ -128,7 +126,7 @@ class HomeFragment: Fragment(R.layout.fragment_home) {
         Logger.d("Resumed Home Fragment")
 
         homeViewModel.selectedLocation[LocationType.PICKUP]?.let { address ->
-            binding.selectLocationPickup.txSelecLocation.text = address.address
+            binding.selectLocationPickup.txSelectLocation.text = address.address
             pickupMarker?.let { pickupMarker ->
                 binding.map.overlays.remove(pickupMarker)
             }
@@ -141,7 +139,7 @@ class HomeFragment: Fragment(R.layout.fragment_home) {
         }
 
         homeViewModel.selectedLocation[LocationType.DROP]?.let { address ->
-            binding.selectLocationDrop.txSelecLocation.text = address.address
+            binding.selectLocationDrop.txSelectLocation.text = address.address
             dropMarker?.let { dropMark ->
                 binding.map.overlays.remove(dropMark)
             }

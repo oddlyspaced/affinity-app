@@ -19,7 +19,8 @@ import com.oddlyspaced.surge.app_common.AffinityConfiguration
 import com.oddlyspaced.surge.app_common.Logger
 import com.oddlyspaced.surge.app_common.asGeoPoint
 import com.oddlyspaced.surge.app_common.asLocation
-import com.oddlyspaced.surge.app_common.modal.*
+import com.oddlyspaced.surge.app_common.modal.Address
+import com.oddlyspaced.surge.app_common.modal.Location
 import dagger.hilt.android.AndroidEntryPoint
 import org.osmdroid.config.Configuration
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
