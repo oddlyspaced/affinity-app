@@ -7,6 +7,7 @@ import android.view.View
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import com.freelapp.libs.locationfetcher.LocationFetcher
 import com.freelapp.libs.locationfetcher.locationFetcher
 import com.google.android.gms.location.LocationRequest
@@ -113,6 +114,9 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
             CoroutineScope(Dispatchers.IO).launch {
                 markCurrentLocation()
             }
+        }
+        binding.fabHomeEdit.setOnClickListener {
+            findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToEditFragment())
         }
     }
 
