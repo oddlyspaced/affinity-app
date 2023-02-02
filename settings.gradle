@@ -13,6 +13,6 @@ dependencyResolutionManagement {
     }
 }
 rootProject.name = "Affinity"
-include ':app-customer'
-include ':app-provider'
-include ':app-common'
+include ':customer'
+include ':provider'
+include ':common'

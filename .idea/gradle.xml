@@ -10,9 +10,9 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
-            <option value="$PROJECT_DIR$/app-common" />
-            <option value="$PROJECT_DIR$/app-customer" />
-            <option value="$PROJECT_DIR$/app-provider" />
+            <option value="$PROJECT_DIR$/common" />
+            <option value="$PROJECT_DIR$/customer" />
+            <option value="$PROJECT_DIR$/provider" />
           </set>
         </option>
       </GradleProjectSettings>

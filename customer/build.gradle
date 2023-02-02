@@ -8,11 +8,11 @@ plugins {
 }
 
 android {
-    namespace 'com.oddlyspaced.surge.app.provider'
+    namespace 'com.oddlyspaced.surge.app.customer'
     compileSdk 33
 
     defaultConfig {
-        applicationId "com.oddlyspaced.surge.app.provider"
+        applicationId "com.oddlyspaced.surge.app.customer"
         minSdk 28
         targetSdk 33
         versionCode 1
@@ -49,7 +49,6 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
 
-
     // Navigation
     implementation "androidx.navigation:navigation-fragment-ktx:2.5.3"
     implementation "androidx.navigation:navigation-ui-ktx:2.5.3"
@@ -71,8 +70,8 @@ dependencies {
 
     // location fetcher
     implementation("app.freel:locationfetcher:9.0.0")
+    implementation project(':common')
 
-    implementation project(':app-common')
 }
 
 // Allow references to generated code
