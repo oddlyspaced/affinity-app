@@ -18,7 +18,7 @@
         app:srcCompat="@drawable/ic_location" />
 
     <TextView
-        android:id="@+id/tx_selec_location"
+        android:id="@+id/tx_select_location"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
