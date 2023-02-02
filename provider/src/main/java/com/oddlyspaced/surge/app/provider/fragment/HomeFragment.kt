@@ -7,6 +7,7 @@ import android.view.View
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.freelapp.libs.locationfetcher.LocationFetcher
 import com.freelapp.libs.locationfetcher.locationFetcher
@@ -14,9 +15,11 @@ import com.google.android.gms.location.LocationRequest
 import com.oddlyspaced.surge.app.common.AffinityConfiguration
 import com.oddlyspaced.surge.app.common.Logger
 import com.oddlyspaced.surge.app.common.asGeoPoint
+import com.oddlyspaced.surge.app.common.modal.asGeoPoint
 import com.oddlyspaced.surge.app.provider.BuildConfig
 import com.oddlyspaced.surge.app.provider.R
 import com.oddlyspaced.surge.app.provider.databinding.FragmentHomeBinding
+import com.oddlyspaced.surge.app.provider.viewmodel.HomeViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -24,8 +27,10 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.osmdroid.config.Configuration
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
+import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.CustomZoomButtonsController
 import org.osmdroid.views.overlay.Marker
+import org.osmdroid.views.overlay.Polygon
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
 
@@ -33,8 +38,12 @@ import kotlin.time.Duration.Companion.seconds
 class HomeFragment : Fragment(R.layout.fragment_home) {
 
     private lateinit var userLocationMarker: Marker
+    private var currentMarker: Marker? = null
 
     private lateinit var binding: FragmentHomeBinding
+
+    private val homeViewModel: HomeViewModel by activityViewModels()
+
     private val locationFetcher = locationFetcher("We need your permission to use your location for showing nearby items") {
         fastestInterval = 5.seconds
         interval = 15.seconds
@@ -59,6 +68,14 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
             markCurrentLocation()
         }
         init()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        homeViewModel.sourcePointAddress?.let { sourceAddress ->
+            addMarker(sourceAddress.location.asGeoPoint())
+            createCircleAroundPoint(sourceAddress.location.asGeoPoint(), homeViewModel.sourcePointWorkingRadius.toDouble())
+        }
     }
 
     // handles runtime map configuration
@@ -117,6 +134,46 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         binding.fabHomeEdit.setOnClickListener {
             findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToEditFragment())
         }
+    }
+
+    private val polygonGeoPoints = arrayListOf<GeoPoint>()
+    private lateinit var areaPolygon: Polygon
+
+    private fun createCircleAroundPoint(point: GeoPoint, radius: Double) {
+        Logger.d("Drawing circle for $point")
+        polygonGeoPoints.clear()
+        for (i in 0 until 360) {
+            polygonGeoPoints.add(point.destinationPoint(radius * 1000, i.toDouble()))
+        }
+        handlePolygon()
+    }
+
+    private fun handlePolygon() {
+        if (this::areaPolygon.isInitialized) {
+            binding.map.overlayManager.remove(areaPolygon)
+        }
+        areaPolygon = Polygon().apply {
+            title = "Sample Title"
+            fillPaint.color = Color.BLUE
+            fillPaint.alpha = 128
+            outlinePaint.color = Color.BLACK
+            isVisible = true
+            points = polygonGeoPoints
+        }
+        binding.map.overlayManager.add(areaPolygon)
+        binding.map.invalidate()
+    }
+
+    private fun addMarker(point: GeoPoint) {
+        if (currentMarker != null) {
+            binding.map.overlays.remove(currentMarker)
+        }
+        currentMarker = Marker(binding.map).apply {
+            position = point
+            icon = ContextCompat.getDrawable(requireContext(), com.oddlyspaced.surge.app.common.R.drawable.ic_location)?.apply { setTint(Color.RED) }
+            setInfoWindow(null)
+        }
+        binding.map.overlays.add(currentMarker)
     }
 
 }
