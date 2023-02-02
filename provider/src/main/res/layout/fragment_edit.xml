@@ -81,25 +81,25 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="16dp"
                 android:fontFamily="@font/medium"
-                android:text="10 km"
+                android:text="1 km"
                 android:textColor="@color/black"
                 android:textSize="16sp" />
         </LinearLayout>
 
         <com.google.android.material.slider.Slider
-            android:id="@+id/slider_search_distance"
+            android:id="@+id/slider_edit_distance"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
             android:layout_marginBottom="8dp"
             android:stepSize="1"
-            android:valueFrom="5"
+            android:valueFrom="1"
             android:valueTo="50"
             app:labelBehavior="gone" />
 
         <androidx.cardview.widget.CardView
-            android:id="@+id/card_home_search"
+            android:id="@+id/card_edit_save"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
