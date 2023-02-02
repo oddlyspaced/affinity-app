@@ -1,4 +1,4 @@
-package com.oddlyspaced.surge.affinity.repository
+package com.oddlyspaced.surge.app_common.repository
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

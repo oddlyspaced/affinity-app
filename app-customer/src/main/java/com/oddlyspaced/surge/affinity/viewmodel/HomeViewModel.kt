@@ -1,8 +1,8 @@
 package com.oddlyspaced.surge.affinity.viewmodel
 
 import androidx.lifecycle.ViewModel
-import com.oddlyspaced.surge.affinity.repository.LocationRepository
-import com.oddlyspaced.surge.affinity.repository.ProviderRepository
+import com.oddlyspaced.surge.app_common.repository.LocationRepository
+import com.oddlyspaced.surge.app_common.repository.ProviderRepository
 import com.oddlyspaced.surge.app_common.modal.Address
 import com.oddlyspaced.surge.app_common.modal.Location
 import dagger.hilt.android.lifecycle.HiltViewModel
