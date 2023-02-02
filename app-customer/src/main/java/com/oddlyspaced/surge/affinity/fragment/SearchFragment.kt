@@ -12,6 +12,16 @@ class SearchFragment: Fragment(R.layout.fragment_search) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         binding = FragmentSearchBinding.bind(view)
+
+        init()
+    }
+
+    private fun init() {
+        binding.sliderSearchDistance.addOnChangeListener { _, value, fromUser ->
+            if (fromUser) {
+                binding.textSearchDistance.text = "${value.toInt()} km"
+            }
+        }
     }
 
 }
