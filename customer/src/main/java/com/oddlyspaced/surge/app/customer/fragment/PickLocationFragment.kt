@@ -18,6 +18,8 @@ import com.oddlyspaced.surge.app.common.asGeoPoint
 import com.oddlyspaced.surge.app.common.asLocation
 import com.oddlyspaced.surge.app.common.modal.Address
 import com.oddlyspaced.surge.app.common.modal.Location
+import com.oddlyspaced.surge.app.common.modal.Provider
+import com.oddlyspaced.surge.app.common.modal.asGeoPoint
 import com.oddlyspaced.surge.app.customer.BuildConfig
 import com.oddlyspaced.surge.app.customer.R
 import com.oddlyspaced.surge.app.customer.databinding.FragmentPickLocationBinding
@@ -36,7 +38,7 @@ class PickLocationFragment : Fragment(R.layout.fragment_pick_location) {
     private lateinit var binding: FragmentPickLocationBinding
     private val gpsTrackerService by lazy { GPSTrackerService(requireContext()) }
 
-    private val vm: HomeViewModel by activityViewModels()
+    private val homeViewModel: HomeViewModel by activityViewModels()
     private var currentAddress: Address? = null
     private var currentMarker: Marker? = null
 
@@ -115,15 +117,32 @@ class PickLocationFragment : Fragment(R.layout.fragment_pick_location) {
     private fun init() {
         binding.cardButtonSaveLocation.setOnClickListener {
             currentAddress?.let { address ->
-                vm.selectedLocation[args.pickupType] = address
+                homeViewModel.selectedLocation[args.pickupType] = address
             }
             findNavController().popBackStack()
         }
+
+        homeViewModel.providers.observe(requireActivity()) { list ->
+            list.forEach { provider ->
+                markProvider(provider)
+            }
+        }
+    }
+
+    private fun markProvider(provider: Provider) {
+        if (!isAdded)
+            return
+        val marker = Marker(binding.map).apply {
+            position = provider.location.asGeoPoint()
+            icon = ContextCompat.getDrawable(requireContext(), com.oddlyspaced.surge.app.common.R.drawable.ic_location)?.apply { setTint(Color.BLACK) }
+            setInfoWindow(null)
+        }
+        binding.map.overlays.add(marker)
     }
 
     private fun setAddressForLocation(location: Location) {
         binding.txPickerAddress.text = "Loading..."
-        vm.addressFromLocation(location, binding.map.zoomLevelDouble.toInt()).observe(requireActivity()) { result ->
+        homeViewModel.addressFromLocation(location, binding.map.zoomLevelDouble.toInt()).observe(requireActivity()) { result ->
             binding.txPickerAddress.text = result.displayName + "\n" + "lat: ${location.lat}, lon: ${location.lon}"
             currentAddress = Address(location, result.displayName ?: "${location.lat}, ${location.lon}")
         }
