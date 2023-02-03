@@ -4,10 +4,14 @@ import android.graphics.Color
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.view.View
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
+import com.freelapp.libs.locationfetcher.LocationFetcher
+import com.freelapp.libs.locationfetcher.locationFetcher
+import com.google.android.gms.location.LocationRequest
 import com.oddlyspaced.surge.app.customer.service.GPSTrackerService
 import com.oddlyspaced.surge.app.customer.viewmodel.HomeViewModel
 import com.oddlyspaced.surge.app.customer.viewmodel.LocationType
@@ -20,29 +24,48 @@ import com.oddlyspaced.surge.app.customer.BuildConfig
 import com.oddlyspaced.surge.app.customer.R
 import com.oddlyspaced.surge.app.customer.databinding.FragmentHomeBinding
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import org.osmdroid.config.Configuration
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.views.CustomZoomButtonsController
 import org.osmdroid.views.overlay.Marker
+import kotlin.time.Duration.Companion.minutes
+import kotlin.time.Duration.Companion.seconds
 
 @AndroidEntryPoint
 class HomeFragment: Fragment(R.layout.fragment_home) {
 
     private lateinit var binding: FragmentHomeBinding
-    private val gpsTrackerService by lazy { GPSTrackerService(requireContext()) }
     private val homeViewModel: HomeViewModel by activityViewModels()
 
-    // stores state of home fragment
-    private enum class HomeState {
-        DEFAULT, PICKING_PICKUP, PICKING_DROP
+    private lateinit var userLocationMarker: Marker
+
+    private val locationFetcher = locationFetcher("We need your permission to use your location for showing nearby items") {
+        fastestInterval = 5.seconds
+        interval = 15.seconds
+        maxWaitTime = 2.minutes
+        priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+        smallestDisplacement = 50f
+        isWaitForAccurateLocation = false
+        providers = listOf(
+            LocationFetcher.Provider.GPS,
+            LocationFetcher.Provider.Network,
+            LocationFetcher.Provider.Fused,
+        )
+        numUpdates = Int.MAX_VALUE
+        debug = BuildConfig.DEBUG
     }
-    private var currentState = HomeState.DEFAULT
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         binding = FragmentHomeBinding.bind(view)
 
         initOSMDroid()
-        markCurrentLocation()
+        CoroutineScope(Dispatchers.IO).launch {
+            markCurrentLocation()
+        }
         init()
     }
 
@@ -66,17 +89,31 @@ class HomeFragment: Fragment(R.layout.fragment_home) {
         binding.map.controller.setZoom(AffinityConfiguration.DEFAULT_MAP_ZOOM)
     }
 
-    private fun markCurrentLocation() {
-        val userPoint = gpsTrackerService.fetchLocation().asGeoPoint()
-        val marker = Marker(binding.map).apply {
-            position = userPoint
-            Logger.d("Current Location: ${gpsTrackerService.fetchLocation()}")
-            setAnchor(Marker.ANCHOR_BOTTOM, Marker.ANCHOR_BOTTOM)
-            icon = ContextCompat.getDrawable(requireContext(), com.oddlyspaced.surge.app.common.R.drawable.ic_location)?.apply { setTint(Color.BLUE) }
-            setInfoWindow(null)
+    private suspend fun markCurrentLocation() {
+        locationFetcher.location.collectLatest {
+            it.fold({ error ->
+                Toast.makeText(requireContext(), "Error occurred while fetching location.", Toast.LENGTH_SHORT).show()
+                Logger.d("ERROR: $error")
+            }, { location ->
+                val userPoint = location.asGeoPoint()
+                if (this@HomeFragment::userLocationMarker.isInitialized) {
+                    requireActivity().runOnUiThread {
+                        binding.map.overlays.remove(userLocationMarker)
+                    }
+                }
+                userLocationMarker = Marker(binding.map).apply {
+                    position = userPoint
+                    setAnchor(Marker.ANCHOR_BOTTOM, Marker.ANCHOR_BOTTOM)
+                    icon = ContextCompat.getDrawable(requireContext(), com.oddlyspaced.surge.app.common.R.drawable.ic_location)?.apply { setTint(
+                        Color.BLUE) }
+                    setInfoWindow(null)
+                }
+                requireActivity().runOnUiThread {
+                    binding.map.controller.setCenter(userPoint)
+                    binding.map.overlays.add(userLocationMarker)
+                }
+            })
         }
-        binding.map.controller.setCenter(userPoint)
-        binding.map.overlays.add(marker)
     }
 
     private fun markProvider(provider: Provider) {
