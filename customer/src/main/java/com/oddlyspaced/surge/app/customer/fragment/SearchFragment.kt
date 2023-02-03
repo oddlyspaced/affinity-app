@@ -16,6 +16,7 @@ import com.google.android.material.slider.Slider
 import com.google.android.material.slider.Slider.OnSliderTouchListener
 import com.oddlyspaced.surge.app.common.AffinityConfiguration
 import com.oddlyspaced.surge.app.common.Logger
+import com.oddlyspaced.surge.app.common.applyFrom
 import com.oddlyspaced.surge.app.common.asGeoPoint
 import com.oddlyspaced.surge.app.common.modal.Provider
 import com.oddlyspaced.surge.app.common.modal.asGeoPoint
@@ -42,18 +43,7 @@ class SearchFragment: Fragment(R.layout.fragment_search) {
     private lateinit var currentLocationGeoPoint: GeoPoint
 
     private val currentLocationFetcher = locationFetcher("We need your permission to use your location for showing nearby items") {
-        fastestInterval = 5.seconds
-        interval = 15.seconds
-        maxWaitTime = 2.minutes
-        priority = LocationRequest.PRIORITY_HIGH_ACCURACY
-        smallestDisplacement = 50f
-        isWaitForAccurateLocation = false
-        providers = listOf(
-            LocationFetcher.Provider.GPS,
-            LocationFetcher.Provider.Network,
-            LocationFetcher.Provider.Fused,
-        )
-        numUpdates = Int.MAX_VALUE
+        this.applyFrom(AffinityConfiguration.locationFetcherGlobalConfig)
     }
 
     private val homeViewModel: HomeViewModel by activityViewModels()
