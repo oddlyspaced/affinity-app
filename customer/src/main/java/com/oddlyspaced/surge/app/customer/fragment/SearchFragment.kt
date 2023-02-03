@@ -7,6 +7,8 @@ import android.view.View
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.findNavController
 import com.freelapp.libs.locationfetcher.LocationFetcher
 import com.freelapp.libs.locationfetcher.locationFetcher
 import com.google.android.gms.location.LocationRequest
@@ -15,9 +17,12 @@ import com.google.android.material.slider.Slider.OnSliderTouchListener
 import com.oddlyspaced.surge.app.common.AffinityConfiguration
 import com.oddlyspaced.surge.app.common.Logger
 import com.oddlyspaced.surge.app.common.asGeoPoint
+import com.oddlyspaced.surge.app.common.modal.Provider
+import com.oddlyspaced.surge.app.common.modal.asGeoPoint
 import com.oddlyspaced.surge.app.customer.BuildConfig
 import com.oddlyspaced.surge.app.customer.R
 import com.oddlyspaced.surge.app.customer.databinding.FragmentSearchBinding
+import com.oddlyspaced.surge.app.customer.viewmodel.HomeViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
@@ -51,6 +56,8 @@ class SearchFragment: Fragment(R.layout.fragment_search) {
         numUpdates = Int.MAX_VALUE
     }
 
+    private val homeViewModel: HomeViewModel by activityViewModels()
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         binding = FragmentSearchBinding.bind(view)
 
@@ -75,6 +82,21 @@ class SearchFragment: Fragment(R.layout.fragment_search) {
             }
 
         })
+
+        homeViewModel.providers.observe(requireActivity()) { list ->
+            list.forEach { provider ->
+                markProvider(provider)
+            }
+        }
+    }
+
+    private fun markProvider(provider: Provider) {
+        val marker = Marker(binding.map).apply {
+            position = provider.location.asGeoPoint()
+            icon = ContextCompat.getDrawable(requireContext(), com.oddlyspaced.surge.app.common.R.drawable.ic_location)?.apply { setTint(Color.BLACK) }
+            setInfoWindow(null)
+        }
+        binding.map.overlays.add(marker)
     }
 
     private fun initOSMDroid() {
