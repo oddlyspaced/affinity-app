@@ -25,6 +25,7 @@ import com.oddlyspaced.surge.app.customer.BuildConfig
 import com.oddlyspaced.surge.app.customer.R
 import com.oddlyspaced.surge.app.customer.databinding.FragmentSearchBinding
 import com.oddlyspaced.surge.app.customer.viewmodel.HomeViewModel
+import com.oddlyspaced.surge.app.customer.viewmodel.LocationType
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
@@ -33,6 +34,7 @@ import org.osmdroid.config.Configuration
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.CustomZoomButtonsController
+import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Marker
 import org.osmdroid.views.overlay.Polygon
 import kotlin.time.Duration.Companion.minutes
@@ -41,13 +43,12 @@ import kotlin.time.Duration.Companion.seconds
 class SearchFragment: Fragment(R.layout.fragment_search) {
 
     private lateinit var binding: FragmentSearchBinding
-    private lateinit var currentLocationGeoPoint: GeoPoint
-
-    private val currentLocationFetcher = locationFetcher("We need your permission to use your location for showing nearby items") {
+    private val homeViewModel: HomeViewModel by activityViewModels()
+    private val markers = hashMapOf<Int, Marker>()
+    private val locationFetcher = locationFetcher("We need permission to fetch location") {
         this.applyFrom(AffinityConfiguration.locationFetcherGlobalConfig)
     }
 
-    private val homeViewModel: HomeViewModel by activityViewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         binding = FragmentSearchBinding.bind(view)
@@ -55,7 +56,7 @@ class SearchFragment: Fragment(R.layout.fragment_search) {
         init()
         initOSMDroid()
         CoroutineScope(Dispatchers.Default).launch {
-            markCurrentLocation()
+            markUserLocation()
         }
     }
 
@@ -69,7 +70,7 @@ class SearchFragment: Fragment(R.layout.fragment_search) {
             override fun onStartTrackingTouch(slider: Slider) {}
 
             override fun onStopTrackingTouch(slider: Slider) {
-                createCircleAroundPoint(currentLocationGeoPoint, slider.value.toDouble())
+//                createCircleAroundPoint(currentLocationGeoPoint, slider.value.toDouble())
             }
 
         })
@@ -93,27 +94,17 @@ class SearchFragment: Fragment(R.layout.fragment_search) {
                 })
             }
         }
-    }
 
-    private fun markProvider(provider: Provider) {
-        if (!isAdded) {
-            return
+        homeViewModel.selectedLocation[LocationType.PICKUP]?.let { pickupAddress ->
+            markPickupLocation(pickupAddress.location.asGeoPoint())
         }
-        val marker = Marker(binding.map).apply {
-            position = provider.location.asGeoPoint()
-            icon = ContextCompat.getDrawable(requireContext(), com.oddlyspaced.surge.app.common.R.drawable.ic_location)?.apply { setTint(Color.BLACK) }
-            setInfoWindow(null)
+
+        homeViewModel.selectedLocation[LocationType.DROP]?.let { dropAddress ->
+            markDropLocation(dropAddress.location.asGeoPoint())
         }
-        binding.map.overlays.add(marker)
     }
 
     private fun initOSMDroid() {
-        // setup map configuration
-        Configuration.getInstance().let { config ->
-            config.load(requireContext(), PreferenceManager.getDefaultSharedPreferences(requireContext()))
-            config.userAgentValue = BuildConfig.APPLICATION_ID
-        }
-
         // setting up map
         binding.map.apply {
             setUseDataConnection(true)
@@ -126,24 +117,58 @@ class SearchFragment: Fragment(R.layout.fragment_search) {
         binding.map.controller.setZoom(AffinityConfiguration.DEFAULT_MAP_ZOOM)
     }
 
-    private suspend fun markCurrentLocation() {
-        currentLocationFetcher.location.collectLatest {
+    private fun addMarker(id: Int, point: GeoPoint, tint: Int, onMarkerClick: ((Marker, MapView) -> Boolean)) {
+        if (!isAdded) {
+            return
+        }
+        requireActivity().runOnUiThread {
+            markers[id]?.let { marker ->
+                binding.map.overlays.remove(marker)
+            }
+            markers[id] = Marker(binding.map).apply {
+                position = point
+                setAnchor(Marker.ANCHOR_BOTTOM, Marker.ANCHOR_BOTTOM)
+                icon = ContextCompat.getDrawable(requireContext(), com.oddlyspaced.surge.app.common.R.drawable.ic_location)
+                    ?.apply { setTint(tint) }
+                setOnMarkerClickListener(onMarkerClick)
+                setInfoWindow(null)
+            }
+            binding.map.overlays.add(markers[id])
+        }
+    }
+
+    private fun markProvider(provider: Provider) {
+        addMarker(provider.id, provider.location.asGeoPoint(), Color.BLACK, ) { _, _ -> false }
+    }
+
+    private suspend fun markUserLocation() {
+        locationFetcher.location.collectLatest {
             it.fold({ error ->
-                Toast.makeText(requireContext(), "Error occurred while fetching location", Toast.LENGTH_SHORT).show()
-                Logger.d("Error while fetching location in SearchFragment: $error")
-            }, { location ->
-                currentLocationGeoPoint = location.asGeoPoint()
-                val marker = Marker(binding.map).apply {
-                    position = currentLocationGeoPoint
-                    setAnchor(Marker.ANCHOR_BOTTOM, Marker.ANCHOR_BOTTOM)
-                    icon = ContextCompat.getDrawable(requireContext(), com.oddlyspaced.surge.app.common.R.drawable.ic_location)?.apply { setTint(Color.BLUE) }
-                    setInfoWindow(null)
-                }
                 requireActivity().runOnUiThread {
-                    binding.map.controller.setCenter(currentLocationGeoPoint)
-                    binding.map.overlays.add(marker)
+                    Toast.makeText(requireContext(), "Error occurred while fetching location.", Toast.LENGTH_SHORT).show()
+                }
+                Logger.d("ERROR: $error")
+            }, { location ->
+                val userPoint = location.asGeoPoint()
+                addMarker(PickLocationFragment.MARKER_ID_USER, userPoint, Color.BLUE) { _, _ -> false}
+                requireActivity().runOnUiThread {
+                    binding.map.controller.setCenter(userPoint)
                 }
             })
+        }
+    }
+
+    private fun markPickupLocation(point: GeoPoint) {
+        addMarker(PickLocationFragment.MARKER_ID_PICKUP, point, Color.RED) { _, _, -> false}
+        requireActivity().runOnUiThread {
+            binding.map.controller.setCenter(point)
+        }
+    }
+
+    private fun markDropLocation(point: GeoPoint) {
+        addMarker(PickLocationFragment.MARKER_ID_DROP, point, Color.GREEN) { _, _, -> false}
+        requireActivity().runOnUiThread {
+            binding.map.controller.setCenter(point)
         }
     }
 
