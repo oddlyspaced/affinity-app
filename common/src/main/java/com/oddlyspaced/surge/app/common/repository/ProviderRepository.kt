@@ -5,4 +5,5 @@ import javax.inject.Inject
 
 class ProviderRepository @Inject constructor(private val api: Api) {
     suspend fun providers() = api.fetchAllProviders()
+    suspend fun services() = api.fetchServiceTags()
 }
