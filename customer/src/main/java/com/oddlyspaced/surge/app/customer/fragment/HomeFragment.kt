@@ -117,6 +117,8 @@ class HomeFragment: Fragment(R.layout.fragment_home) {
     }
 
     private fun markProvider(provider: Provider) {
+        if (!isAdded)
+            return
         val marker = Marker(binding.map).apply {
             position = provider.location.asGeoPoint()
             icon = ContextCompat.getDrawable(requireContext(), com.oddlyspaced.surge.app.common.R.drawable.ic_location)?.apply { setTint(Color.BLACK) }
