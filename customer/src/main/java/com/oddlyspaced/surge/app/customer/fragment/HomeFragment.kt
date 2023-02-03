@@ -17,6 +17,7 @@ import com.oddlyspaced.surge.app.customer.viewmodel.HomeViewModel
 import com.oddlyspaced.surge.app.customer.viewmodel.LocationType
 import com.oddlyspaced.surge.app.common.AffinityConfiguration
 import com.oddlyspaced.surge.app.common.Logger
+import com.oddlyspaced.surge.app.common.applyFrom
 import com.oddlyspaced.surge.app.common.asGeoPoint
 import com.oddlyspaced.surge.app.common.modal.Provider
 import com.oddlyspaced.surge.app.common.modal.asGeoPoint
@@ -44,19 +45,7 @@ class HomeFragment: Fragment(R.layout.fragment_home) {
     private lateinit var userLocationMarker: Marker
 
     private val locationFetcher = locationFetcher("We need your permission to use your location for showing nearby items") {
-        fastestInterval = 5.seconds
-        interval = 15.seconds
-        maxWaitTime = 2.minutes
-        priority = LocationRequest.PRIORITY_HIGH_ACCURACY
-        smallestDisplacement = 50f
-        isWaitForAccurateLocation = false
-        providers = listOf(
-            LocationFetcher.Provider.GPS,
-            LocationFetcher.Provider.Network,
-            LocationFetcher.Provider.Fused,
-        )
-        numUpdates = Int.MAX_VALUE
-        debug = BuildConfig.DEBUG
+        this.applyFrom(AffinityConfiguration.locationFetcherGlobalConfig)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
