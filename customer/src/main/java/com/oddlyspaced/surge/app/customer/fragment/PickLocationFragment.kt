@@ -2,29 +2,29 @@ package com.oddlyspaced.surge.app.customer.fragment
 
 import android.graphics.Color
 import android.os.Bundle
-import android.preference.PreferenceManager
 import android.view.MotionEvent
 import android.view.View
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import com.oddlyspaced.surge.app.customer.service.GPSTrackerService
-import com.oddlyspaced.surge.app.customer.viewmodel.HomeViewModel
-import com.oddlyspaced.surge.app.common.AffinityConfiguration
-import com.oddlyspaced.surge.app.common.Logger
-import com.oddlyspaced.surge.app.common.asGeoPoint
-import com.oddlyspaced.surge.app.common.asLocation
+import com.freelapp.libs.locationfetcher.locationFetcher
+import com.oddlyspaced.surge.app.common.*
 import com.oddlyspaced.surge.app.common.modal.Address
 import com.oddlyspaced.surge.app.common.modal.Location
 import com.oddlyspaced.surge.app.common.modal.Provider
 import com.oddlyspaced.surge.app.common.modal.asGeoPoint
-import com.oddlyspaced.surge.app.customer.BuildConfig
 import com.oddlyspaced.surge.app.customer.R
 import com.oddlyspaced.surge.app.customer.databinding.FragmentPickLocationBinding
+import com.oddlyspaced.surge.app.customer.viewmodel.HomeViewModel
+import com.oddlyspaced.surge.app.customer.viewmodel.LocationType
 import dagger.hilt.android.AndroidEntryPoint
-import org.osmdroid.config.Configuration
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.CustomZoomButtonsController
@@ -36,31 +36,36 @@ import org.osmdroid.views.overlay.Overlay
 class PickLocationFragment : Fragment(R.layout.fragment_pick_location) {
 
     private lateinit var binding: FragmentPickLocationBinding
-    private val gpsTrackerService by lazy { GPSTrackerService(requireContext()) }
 
     private val homeViewModel: HomeViewModel by activityViewModels()
     private var currentAddress: Address? = null
-    private var currentMarker: Marker? = null
-
     private val args: PickLocationFragmentArgs by navArgs()
+
+    companion object {
+        const val MARKER_ID_PICKUP = -1
+        const val MARKER_ID_DROP = -2
+        const val MARKER_ID_USER = 0
+    }
+
+    private val markers = hashMapOf<Int, Marker>()
+
+    private val locationFetcher = locationFetcher("We need permission to fetch location") {
+        this.applyFrom(AffinityConfiguration.locationFetcherGlobalConfig)
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         binding = FragmentPickLocationBinding.bind(view)
 
         initOSMDroid()
-        markCurrentLocation()
+        CoroutineScope(Dispatchers.IO).launch {
+            markCurrentLocation()
+        }
         setupTouchTargetOverlay()
         init()
     }
 
     // handles runtime map configuration
     private fun initOSMDroid() {
-        // setup map configuration
-        Configuration.getInstance().let { config ->
-            config.load(requireContext(), PreferenceManager.getDefaultSharedPreferences(requireContext()))
-            config.userAgentValue = BuildConfig.APPLICATION_ID
-        }
-
         // setting up map
         binding.map.apply {
             setUseDataConnection(true)
@@ -68,34 +73,67 @@ class PickLocationFragment : Fragment(R.layout.fragment_pick_location) {
             setMultiTouchControls(true)
             zoomController.setVisibility(CustomZoomButtonsController.Visibility.NEVER)
         }
-
         // zooming in by default
         binding.map.controller.setZoom(AffinityConfiguration.DEFAULT_MAP_ZOOM)
     }
 
-    private fun markCurrentLocation() {
-        val userPoint = gpsTrackerService.fetchLocation().asGeoPoint()
-        val marker = Marker(binding.map).apply {
-            position = userPoint
-            setAnchor(Marker.ANCHOR_BOTTOM, Marker.ANCHOR_BOTTOM)
-            icon = ContextCompat.getDrawable(requireContext(), com.oddlyspaced.surge.app.common.R.drawable.ic_location)?.apply { setTint(
-                Color.BLUE) }
-            setInfoWindow(null)
+    private suspend fun markCurrentLocation() {
+        locationFetcher.location.collectLatest {
+            it.fold({ error ->
+                requireActivity().runOnUiThread {
+                    Toast.makeText(requireContext(), "Error occurred while fetching location.", Toast.LENGTH_SHORT).show()
+                }
+                Logger.d("ERROR: $error")
+            }, { location ->
+                val userPoint = location.asGeoPoint()
+                markUserLocation(userPoint)
+            })
         }
-        binding.map.controller.setCenter(userPoint)
-        binding.map.overlays.add(marker)
     }
 
-    private fun addMarker(point: GeoPoint) {
-        if (currentMarker != null) {
-            binding.map.overlays.remove(currentMarker)
+    private fun addMarker(id: Int, point: GeoPoint, tint: Int, onMarkerClick: ((Marker, MapView) -> Boolean)) {
+        if (!isAdded) {
+            return
         }
-        currentMarker = Marker(binding.map).apply {
-            position = point
-            icon = ContextCompat.getDrawable(requireContext(), com.oddlyspaced.surge.app.common.R.drawable.ic_location)?.apply { setTint(Color.RED) }
-            setInfoWindow(null)
+        requireActivity().runOnUiThread {
+            markers[id]?.let { marker ->
+                binding.map.overlays.remove(marker)
+            }
+            markers[id] = Marker(binding.map).apply {
+                position = point
+                setAnchor(Marker.ANCHOR_BOTTOM, Marker.ANCHOR_BOTTOM)
+                icon = ContextCompat.getDrawable(requireContext(), com.oddlyspaced.surge.app.common.R.drawable.ic_location)
+                    ?.apply { setTint(tint) }
+                setOnMarkerClickListener(onMarkerClick)
+                setInfoWindow(null)
+            }
+            binding.map.overlays.add(markers[id])
         }
-        binding.map.overlays.add(currentMarker)
+    }
+
+    private fun markProvider(id: Int, provider: Provider) {
+        addMarker(id, provider.location.asGeoPoint(), Color.BLACK, ) { _, _ -> false }
+    }
+
+    private fun markUserLocation(point: GeoPoint) {
+        addMarker(MARKER_ID_USER, point, Color.BLUE) {_, _ -> false}
+        requireActivity().runOnUiThread {
+            binding.map.controller.setCenter(point)
+        }
+    }
+
+    private fun markPickupLocation(point: GeoPoint) {
+        addMarker(MARKER_ID_PICKUP, point, Color.RED) {_, _, -> false}
+        requireActivity().runOnUiThread {
+            binding.map.controller.setCenter(point)
+        }
+    }
+
+    private fun markDropLocation(point: GeoPoint) {
+        addMarker(MARKER_ID_DROP, point, Color.GREEN) {_, _, -> false}
+        requireActivity().runOnUiThread {
+            binding.map.controller.setCenter(point)
+        }
     }
 
     // handle touches on map
@@ -107,7 +145,10 @@ class PickLocationFragment : Fragment(R.layout.fragment_pick_location) {
                 setAddressForLocation(loc.asGeoPoint().asLocation())
                 Logger.d("${loc.latitude} | ${loc.longitude}")
                 binding.map.controller.setCenter(loc.asGeoPoint())
-                addMarker(loc.asGeoPoint())
+                when (args.pickupType) {
+                    LocationType.PICKUP -> markPickupLocation(loc.asGeoPoint())
+                    LocationType.DROP -> markDropLocation(loc.asGeoPoint())
+                }
                 return true
             }
         }
@@ -124,20 +165,17 @@ class PickLocationFragment : Fragment(R.layout.fragment_pick_location) {
 
         homeViewModel.providers.observe(requireActivity()) { list ->
             list.forEach { provider ->
-                markProvider(provider)
+                markProvider(provider.id, provider)
             }
         }
-    }
 
-    private fun markProvider(provider: Provider) {
-        if (!isAdded)
-            return
-        val marker = Marker(binding.map).apply {
-            position = provider.location.asGeoPoint()
-            icon = ContextCompat.getDrawable(requireContext(), com.oddlyspaced.surge.app.common.R.drawable.ic_location)?.apply { setTint(Color.BLACK) }
-            setInfoWindow(null)
+        homeViewModel.selectedLocation[LocationType.PICKUP]?.let { pickupAddress ->
+            markPickupLocation(pickupAddress.location.asGeoPoint())
         }
-        binding.map.overlays.add(marker)
+
+        homeViewModel.selectedLocation[LocationType.DROP]?.let { dropAddress ->
+            markDropLocation(dropAddress.location.asGeoPoint())
+        }
     }
 
     private fun setAddressForLocation(location: Location) {
