@@ -12,6 +12,7 @@ import androidx.navigation.fragment.findNavController
 import com.freelapp.libs.locationfetcher.LocationFetcher
 import com.freelapp.libs.locationfetcher.locationFetcher
 import com.google.android.gms.location.LocationRequest
+import com.google.android.material.chip.Chip
 import com.google.android.material.slider.Slider
 import com.google.android.material.slider.Slider.OnSliderTouchListener
 import com.oddlyspaced.surge.app.common.AffinityConfiguration
@@ -78,9 +79,26 @@ class SearchFragment: Fragment(R.layout.fragment_search) {
                 markProvider(provider)
             }
         }
+
+        binding.chipgroupSearchService.addView(Chip(requireContext()).apply {
+            text = "Loading..."
+        })
+
+        homeViewModel.services.observe(requireActivity()) { services ->
+            binding.chipgroupSearchService.removeAllViews()
+            services.forEach { service ->
+                binding.chipgroupSearchService.addView(Chip(requireContext()).apply {
+                    text = service.tag
+                    isCheckable = true
+                })
+            }
+        }
     }
 
     private fun markProvider(provider: Provider) {
+        if (!isAdded) {
+            return
+        }
         val marker = Marker(binding.map).apply {
             position = provider.location.asGeoPoint()
             icon = ContextCompat.getDrawable(requireContext(), com.oddlyspaced.surge.app.common.R.drawable.ic_location)?.apply { setTint(Color.BLACK) }
