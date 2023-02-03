@@ -9,6 +9,7 @@ import com.oddlyspaced.surge.app.common.repository.ProviderRepository
 import com.oddlyspaced.surge.app.common.modal.Address
 import com.oddlyspaced.surge.app.common.modal.Location
 import com.oddlyspaced.surge.app.common.modal.Provider
+import com.oddlyspaced.surge.app.common.modal.Service
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -35,6 +36,15 @@ class HomeViewModel @Inject constructor(private val repo: ProviderRepository, pr
 
     val selectedLocation = hashMapOf<LocationType, Address>()
     fun addressFromLocation(location: Location, zoom: Int) = locationRepository.address(location, zoom)
+
+    val services: LiveData<ArrayList<Service>>
+    get() {
+        val _services = MutableLiveData<ArrayList<Service>>()
+        CoroutineScope(Dispatchers.IO).launch {
+            _services.postValue(repo.services())
+        }
+        return _services
+    }
 }
 
 enum class LocationType {
