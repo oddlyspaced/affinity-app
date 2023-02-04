@@ -20,6 +20,7 @@ import com.oddlyspaced.surge.app.common.Logger
 import com.oddlyspaced.surge.app.common.applyFrom
 import com.oddlyspaced.surge.app.common.asGeoPoint
 import com.oddlyspaced.surge.app.common.modal.Provider
+import com.oddlyspaced.surge.app.common.modal.Providers
 import com.oddlyspaced.surge.app.common.modal.asGeoPoint
 import com.oddlyspaced.surge.app.customer.BuildConfig
 import com.oddlyspaced.surge.app.customer.R
@@ -113,7 +114,9 @@ class HomeFragment: Fragment(R.layout.fragment_home) {
             icon = ContextCompat.getDrawable(requireContext(), com.oddlyspaced.surge.app.common.R.drawable.ic_location)?.apply { setTint(Color.BLACK) }
             setInfoWindow(null)
             setOnMarkerClickListener { _, _ ->
-                findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToProviderDetailsFragment(provider))
+                findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToProviderDetailsFragment(Providers(
+                    arrayListOf(provider)
+                )))
                 return@setOnMarkerClickListener true
             }
         }
