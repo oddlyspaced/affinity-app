@@ -15,11 +15,9 @@ import com.google.android.gms.location.LocationRequest
 import com.google.android.material.chip.Chip
 import com.google.android.material.slider.Slider
 import com.google.android.material.slider.Slider.OnSliderTouchListener
-import com.oddlyspaced.surge.app.common.AffinityConfiguration
-import com.oddlyspaced.surge.app.common.Logger
-import com.oddlyspaced.surge.app.common.applyFrom
-import com.oddlyspaced.surge.app.common.asGeoPoint
+import com.oddlyspaced.surge.app.common.*
 import com.oddlyspaced.surge.app.common.modal.Provider
+import com.oddlyspaced.surge.app.common.modal.Providers
 import com.oddlyspaced.surge.app.common.modal.SearchParameter
 import com.oddlyspaced.surge.app.common.modal.asGeoPoint
 import com.oddlyspaced.surge.app.customer.BuildConfig
@@ -119,6 +117,7 @@ class SearchFragment: Fragment(R.layout.fragment_search) {
                     )
                 ).observe(requireActivity()) {
                     Logger.d("Search res: ${it.size} \n $it.toStr")
+                    findNavController().navigate(SearchFragmentDirections.actionSearchFragmentToProviderDetailsFragment(Providers(it), markers[PickLocationFragment.MARKER_ID_USER]!!.position!!.asLocation()))
                 }
             }
             catch (e: Exception) {
