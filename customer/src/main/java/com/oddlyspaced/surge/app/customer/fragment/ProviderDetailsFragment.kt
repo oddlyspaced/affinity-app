@@ -5,8 +5,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.fragment.navArgs
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.chip.Chip
+import com.oddlyspaced.surge.app.customer.adapter.ProviderListAdapter
 import com.oddlyspaced.surge.app.customer.databinding.LayoutBottomSheetProviderDetailsBinding
 
 class ProviderDetailsFragment: BottomSheetDialogFragment() {
@@ -27,15 +29,20 @@ class ProviderDetailsFragment: BottomSheetDialogFragment() {
     }
 
     private fun init() {
-        val provider = args.provider
-        binding.apply {
-            txProviderInfoName.text = provider.name
-            txProviderInfoDistance.text = "13 km away" // todo: calculate real distance
-       }
-        provider.services.forEach { service ->
-            binding.chipGroupProviderInfoService.addView(Chip(requireContext()).apply {
-                text = service
-            })
+        val provider = args.providers
+        binding.rvProviderList.apply {
+            layoutManager = LinearLayoutManager(requireContext())
+            setHasFixedSize(true)
+            adapter = ProviderListAdapter(provider.providers)
         }
+//        binding.apply {
+//            txProviderInfoName.text = provider.name
+//            txProviderInfoDistance.text = "13 km away" // todo: calculate real distance
+//       }
+//        provider.services.forEach { service ->
+//            binding.chipGroupProviderInfoService.addView(Chip(requireContext()).apply {
+//                text = service
+//            })
+//        }
     }
 }
