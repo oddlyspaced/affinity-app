@@ -26,12 +26,12 @@
                 android:text="Name"
                 android:textColor="@color/black"
                 android:textSize="20sp"
-                app:layout_constraintEnd_toStartOf="@+id/floatingActionButton"
+                app:layout_constraintEnd_toStartOf="@+id/fab_provider_call"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/floatingActionButton" />
+                app:layout_constraintTop_toTopOf="@+id/fab_provider_call" />
 
             <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/floatingActionButton"
+                android:id="@+id/fab_provider_call"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="32dp"
@@ -52,7 +52,7 @@
                 android:fontFamily="@font/medium"
                 android:text="Distance:"
                 android:textSize="16sp"
-                app:layout_constraintEnd_toStartOf="@+id/floatingActionButton"
+                app:layout_constraintEnd_toStartOf="@+id/fab_provider_call"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tx_provider_info_name" />
 
