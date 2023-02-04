@@ -49,7 +49,6 @@ class SearchFragment: Fragment(R.layout.fragment_search) {
         this.applyFrom(AffinityConfiguration.locationFetcherGlobalConfig)
     }
 
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         binding = FragmentSearchBinding.bind(view)
 
@@ -70,7 +69,7 @@ class SearchFragment: Fragment(R.layout.fragment_search) {
             override fun onStartTrackingTouch(slider: Slider) {}
 
             override fun onStopTrackingTouch(slider: Slider) {
-//                createCircleAroundPoint(currentLocationGeoPoint, slider.value.toDouble())
+                createCircleAroundPoint(homeViewModel.selectedLocation[LocationType.PICKUP]!!.location.asGeoPoint(), slider.value.toDouble())
             }
 
         })
