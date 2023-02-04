@@ -26,8 +26,8 @@
         android:label="layout_bottom_sheet_provider_details"
         tools:layout="@layout/layout_bottom_sheet_provider_details">
         <argument
-            android:name="provider"
-            app:argType="com.oddlyspaced.surge.app.common.modal.Provider" />
+            android:name="providers"
+            app:argType="com.oddlyspaced.surge.app.common.modal.Providers" />
     </dialog>
     <fragment
         android:id="@+id/pickLocationFragment"
