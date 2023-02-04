@@ -43,6 +43,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     private lateinit var binding: FragmentHomeBinding
 
     private val homeViewModel: HomeViewModel by activityViewModels()
+    private var isActive = false
 
     private val locationFetcher = locationFetcher("We need your permission to use your location for showing nearby items") {
         fastestInterval = 5.seconds
@@ -75,10 +76,16 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         homeViewModel.sourcePointAddress?.let { sourceAddress ->
             addMarker(sourceAddress.location.asGeoPoint())
             createCircleAroundPoint(sourceAddress.location.asGeoPoint(), homeViewModel.sourcePointWorkingRadius.toDouble())
+            binding.textHomeStatus.text = if (isActive) "Status: Active" else "Status: In Active"
+            binding.textHomeStatus.setTextColor(if (isActive) Color.GREEN else Color.RED)
+            homeViewModel.updateProviderStatus(0, isActive)
         } ?: run {
             homeViewModel.getProviderInfo(1).observe(requireActivity()) {
                 addMarker(it.areaServed.source.asGeoPoint())
                 createCircleAroundPoint(it.areaServed.source.asGeoPoint(), it.areaServed.radius)
+                binding.textHomeStatus.text = if (it.isActive) "Status: Active" else "Status: In Active"
+                binding.textHomeStatus.setTextColor(if (it.isActive) Color.GREEN else Color.RED)
+                isActive = it.isActive
             }
         }
     }
@@ -138,6 +145,12 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         }
         binding.fabHomeEdit.setOnClickListener {
             findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToEditFragment())
+        }
+        binding.cardToggle.setOnClickListener {
+            isActive = !isActive
+            binding.textHomeStatus.text = if (isActive) "Status: Active" else "Status: In Active"
+            binding.textHomeStatus.setTextColor(if (isActive) Color.GREEN else Color.RED)
+            homeViewModel.updateProviderStatus(1, isActive)
         }
     }
 

@@ -85,19 +85,22 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <TextView
-            android:id="@+id/textView"
+            android:id="@+id/text_home_status"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
             android:layout_marginBottom="12dp"
             android:fontFamily="@font/medium"
-            android:text="Status: Currently availaible and not occupied"
+            android:maxLines="2"
+            android:minLines="2"
+            android:text="Status: Loading..."
             android:textColor="@android:color/holo_green_dark"
             android:textSize="18sp" />
 
 
         <com.google.android.material.card.MaterialCardView
+            android:id="@+id/card_toggle"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginStart="16dp"
