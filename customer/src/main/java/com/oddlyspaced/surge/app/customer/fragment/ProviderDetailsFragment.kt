@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import com.google.android.material.chip.Chip
 import com.oddlyspaced.surge.app.customer.adapter.ProviderListAdapter
 import com.oddlyspaced.surge.app.customer.databinding.LayoutBottomSheetProviderDetailsBinding
 
@@ -33,7 +32,7 @@ class ProviderDetailsFragment: BottomSheetDialogFragment() {
         binding.rvProviderList.apply {
             layoutManager = LinearLayoutManager(requireContext())
             setHasFixedSize(true)
-            adapter = ProviderListAdapter(provider.providers)
+            adapter = ProviderListAdapter(provider.providers, args.baseLocation)
         }
 //        binding.apply {
 //            txProviderInfoName.text = provider.name
