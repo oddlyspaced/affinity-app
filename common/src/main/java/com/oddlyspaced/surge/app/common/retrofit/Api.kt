@@ -37,4 +37,10 @@ interface Api {
         @Query("sourceLon") lon: Double,
         @Query("radius") radius: Double,
     )
+
+    @POST("/provider/statusupdate")
+    suspend fun updateProviderStatus(
+        @Query("id") id: Int,
+        @Query("isActive") status: Boolean,
+    )
 }
