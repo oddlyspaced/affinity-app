@@ -16,4 +16,6 @@ data class Provider(
     val services: ArrayList<String>, // tags of all the services the provider offers
     var areaServed: AreaServed, // area served by provider
 
+    var isActive: Boolean,
+
 ): Parcelable
