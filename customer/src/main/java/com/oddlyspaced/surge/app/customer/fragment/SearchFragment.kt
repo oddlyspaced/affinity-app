@@ -20,6 +20,7 @@ import com.oddlyspaced.surge.app.common.Logger
 import com.oddlyspaced.surge.app.common.applyFrom
 import com.oddlyspaced.surge.app.common.asGeoPoint
 import com.oddlyspaced.surge.app.common.modal.Provider
+import com.oddlyspaced.surge.app.common.modal.SearchParameter
 import com.oddlyspaced.surge.app.common.modal.asGeoPoint
 import com.oddlyspaced.surge.app.customer.BuildConfig
 import com.oddlyspaced.surge.app.customer.R
@@ -100,6 +101,29 @@ class SearchFragment: Fragment(R.layout.fragment_search) {
 
         homeViewModel.selectedLocation[LocationType.DROP]?.let { dropAddress ->
             markDropLocation(dropAddress.location.asGeoPoint())
+        }
+
+        binding.cardHomeSearch.setOnClickListener {
+            try {
+                val pickup = homeViewModel.selectedLocation[LocationType.PICKUP]!!.location
+                val drop = homeViewModel.selectedLocation[LocationType.DROP]!!.location
+                homeViewModel.search(
+                    SearchParameter(
+                        10,
+                        binding.sliderSearchDistance.value.toInt(),
+                        pickup.lat,
+                        pickup.lon,
+                        drop.lat,
+                        drop.lon,
+                        arrayListOf()
+                    )
+                ).observe(requireActivity()) {
+                    Logger.d("Search res: ${it.size} \n $it.toStr")
+                }
+            }
+            catch (e: Exception) {
+                e.printStackTrace()
+            }
         }
     }
 
