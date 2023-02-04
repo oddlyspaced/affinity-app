@@ -88,7 +88,7 @@ class SearchFragment: Fragment(R.layout.fragment_search) {
             services.forEach { service ->
                 binding.chipgroupSearchService.addView(Chip(requireContext()).apply {
                     text = service.tag
-                    isCheckable = true
+//                    isCheckable = true
                 })
             }
         }
