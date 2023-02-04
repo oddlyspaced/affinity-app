@@ -29,7 +29,12 @@ class HomeViewModel @Inject constructor(private val repo: ProviderRepository, pr
     }
     fun updateProviderSourceArea(id: Int, sourcePoint: Location, radius: Double) {
         CoroutineScope(Dispatchers.IO).launch {
-            repo.saveProviderSource(id, sourcePoint, radius)
+            repo.saveProviderSource(1, sourcePoint, radius)
+        }
+    }
+    fun updateProviderStatus(id: Int, status: Boolean) {
+        CoroutineScope(Dispatchers.IO).launch {
+            repo.updateProviderStatus(1, status)
         }
     }
 }
