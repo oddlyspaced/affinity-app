@@ -101,8 +101,11 @@ class EditFragment: Fragment(R.layout.fragment_edit) {
         })
         binding.cardEditSave.setOnClickListener {
             homeViewModel.sourcePointAddress = currentAddress
-            homeViewModel.sourcePointWorkingRadius = binding.sliderEditDistance.value.toInt()
+            homeViewModel.sourcePointWorkingRadius = binding.sliderEditDistance.value.toDouble()
             // post this to server here
+            homeViewModel.updateProviderSourceArea(1, homeViewModel.sourcePointAddress!!.location,
+                homeViewModel.sourcePointWorkingRadius
+            )
             findNavController().popBackStack()
         }
 

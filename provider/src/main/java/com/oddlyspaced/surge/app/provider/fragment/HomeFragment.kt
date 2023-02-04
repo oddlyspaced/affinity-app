@@ -75,6 +75,11 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         homeViewModel.sourcePointAddress?.let { sourceAddress ->
             addMarker(sourceAddress.location.asGeoPoint())
             createCircleAroundPoint(sourceAddress.location.asGeoPoint(), homeViewModel.sourcePointWorkingRadius.toDouble())
+        } ?: run {
+            homeViewModel.getProviderInfo(1).observe(requireActivity()) {
+                addMarker(it.areaServed.source.asGeoPoint())
+                createCircleAroundPoint(it.areaServed.source.asGeoPoint(), it.areaServed.radius)
+            }
         }
     }
 
