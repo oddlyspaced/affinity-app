@@ -28,6 +28,10 @@
         <argument
             android:name="providers"
             app:argType="com.oddlyspaced.surge.app.common.modal.Providers" />
+        <argument
+            android:name="baseLocation"
+            app:nullable="true"
+            app:argType="com.oddlyspaced.surge.app.common.modal.Location" />
     </dialog>
     <fragment
         android:id="@+id/pickLocationFragment"
@@ -42,5 +46,9 @@
         android:id="@+id/searchFragment"
         android:name="com.oddlyspaced.surge.app.customer.fragment.SearchFragment"
         android:label="fragment_search"
-        tools:layout="@layout/fragment_search" />
+        tools:layout="@layout/fragment_search" >
+        <action
+            android:id="@+id/action_searchFragment_to_providerDetailsFragment"
+            app:destination="@id/providerDetailsFragment" />
+    </fragment>
 </navigation>
