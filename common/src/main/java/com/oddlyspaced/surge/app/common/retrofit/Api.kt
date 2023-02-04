@@ -24,4 +24,17 @@ interface Api {
         @Query("dropLat") dropLat: Double,
         @Query("dropLon") dropLon: Double,
     ): ArrayList<Provider>
+
+    @GET("/provider/specific")
+    suspend fun getProvider(
+        @Query("id") id: Int
+    ): Provider
+
+    @POST("/provider/areaupdate")
+    suspend fun updateProviderArea(
+        @Query("id") id: Int,
+        @Query("sourceLat") lat: Double,
+        @Query("sourceLon") lon: Double,
+        @Query("radius") radius: Double,
+    )
 }
