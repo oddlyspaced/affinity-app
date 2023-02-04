@@ -1,9 +1,18 @@
 package com.oddlyspaced.surge.app.common.repository
 
+import com.oddlyspaced.surge.app.common.modal.SearchParameter
 import com.oddlyspaced.surge.app.common.retrofit.Api
 import javax.inject.Inject
 
 class ProviderRepository @Inject constructor(private val api: Api) {
     suspend fun providers() = api.fetchAllProviders()
     suspend fun services() = api.fetchServiceTags()
+    suspend fun search(params: SearchParameter) = api.searchProviders(
+        params.limitCount,
+        params.limitDistance,
+        params.pickupLat,
+        params.pickupLon,
+        params.dropLat,
+        params.dropLon,
+    )
 }
