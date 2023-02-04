@@ -4,12 +4,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.oddlyspaced.surge.app.common.Logger
+import com.oddlyspaced.surge.app.common.modal.*
 import com.oddlyspaced.surge.app.common.repository.LocationRepository
 import com.oddlyspaced.surge.app.common.repository.ProviderRepository
-import com.oddlyspaced.surge.app.common.modal.Address
-import com.oddlyspaced.surge.app.common.modal.Location
-import com.oddlyspaced.surge.app.common.modal.Provider
-import com.oddlyspaced.surge.app.common.modal.Service
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -44,6 +41,14 @@ class HomeViewModel @Inject constructor(private val repo: ProviderRepository, pr
             _services.postValue(repo.services())
         }
         return _services
+    }
+
+    fun search(params: SearchParameter): LiveData<ArrayList<Provider>> {
+        val _search = MutableLiveData<ArrayList<Provider>>()
+        CoroutineScope(Dispatchers.IO).launch {
+            _search.postValue(repo.search(params))
+        }
+        return _search
     }
 }
 
