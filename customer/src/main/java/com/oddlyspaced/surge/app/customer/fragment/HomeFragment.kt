@@ -116,7 +116,7 @@ class HomeFragment: Fragment(R.layout.fragment_home) {
             setOnMarkerClickListener { _, _ ->
                 findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToProviderDetailsFragment(Providers(
                     arrayListOf(provider)
-                )))
+                ), null))
                 return@setOnMarkerClickListener true
             }
         }
