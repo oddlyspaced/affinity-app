@@ -1,5 +1,6 @@
 package com.oddlyspaced.surge.app.common.repository
 
+import com.oddlyspaced.surge.app.common.modal.Location
 import com.oddlyspaced.surge.app.common.modal.SearchParameter
 import com.oddlyspaced.surge.app.common.retrofit.Api
 import javax.inject.Inject
@@ -15,4 +16,6 @@ class ProviderRepository @Inject constructor(private val api: Api) {
         params.dropLat,
         params.dropLon,
     )
+    suspend fun provider(id: Int) = api.getProvider(id)
+    suspend fun saveProviderSource(id: Int, sourcePoint: Location, radius: Double) = api.updateProviderArea(id, sourcePoint.lat, sourcePoint.lon, radius)
 }
