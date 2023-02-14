@@ -16,3 +16,4 @@ rootProject.name = "Affinity"
 include ':customer'
 include ':provider'
 include ':common'
+include ':manager'
