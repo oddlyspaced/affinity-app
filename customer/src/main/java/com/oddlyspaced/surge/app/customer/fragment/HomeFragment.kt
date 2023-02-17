@@ -9,12 +9,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
-import com.freelapp.libs.locationfetcher.LocationFetcher
 import com.freelapp.libs.locationfetcher.locationFetcher
-import com.google.android.gms.location.LocationRequest
-import com.oddlyspaced.surge.app.customer.service.GPSTrackerService
-import com.oddlyspaced.surge.app.customer.viewmodel.HomeViewModel
-import com.oddlyspaced.surge.app.customer.viewmodel.LocationType
 import com.oddlyspaced.surge.app.common.AffinityConfiguration
 import com.oddlyspaced.surge.app.common.Logger
 import com.oddlyspaced.surge.app.common.applyFrom
@@ -25,6 +20,8 @@ import com.oddlyspaced.surge.app.common.modal.asGeoPoint
 import com.oddlyspaced.surge.app.customer.BuildConfig
 import com.oddlyspaced.surge.app.customer.R
 import com.oddlyspaced.surge.app.customer.databinding.FragmentHomeBinding
+import com.oddlyspaced.surge.app.customer.viewmodel.HomeViewModel
+import com.oddlyspaced.surge.app.customer.viewmodel.LocationType
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -34,8 +31,6 @@ import org.osmdroid.config.Configuration
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.views.CustomZoomButtonsController
 import org.osmdroid.views.overlay.Marker
-import kotlin.time.Duration.Companion.minutes
-import kotlin.time.Duration.Companion.seconds
 
 @AndroidEntryPoint
 class HomeFragment: Fragment(R.layout.fragment_home) {
