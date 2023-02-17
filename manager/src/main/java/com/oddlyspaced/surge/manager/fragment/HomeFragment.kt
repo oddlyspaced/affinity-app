@@ -15,6 +15,6 @@ class HomeFragment: Fragment(R.layout.fragment_home) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         binding = FragmentHomeBinding.bind(view)
-//        findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToAddFragment())
+        findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToAddFragment())
     }
 }
