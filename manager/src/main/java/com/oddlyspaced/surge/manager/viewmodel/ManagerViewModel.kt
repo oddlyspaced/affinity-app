@@ -15,8 +15,8 @@ import javax.inject.Inject
 @HiltViewModel
 class ManagerViewModel @Inject constructor(private val repo: ProviderRepository) : ViewModel() {
 
-    private val _providers = MutableLiveData<ArrayList<Provider>>()
-    val providers: LiveData<ArrayList<Provider>>
+    private val _providers = MutableLiveData<List<Provider>>()
+    val providers: LiveData<List<Provider>>
         get() {
             // need to refresh
             Logger.d("Fetching Providers!")
