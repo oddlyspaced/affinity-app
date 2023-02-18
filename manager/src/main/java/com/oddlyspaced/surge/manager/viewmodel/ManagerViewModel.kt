@@ -21,7 +21,7 @@ class ManagerViewModel @Inject constructor(private val repo: ProviderRepository)
             // need to refresh
             Logger.d("Fetching Providers!")
             CoroutineScope(Dispatchers.IO).launch {
-                _providers.postValue(repo.providers())
+                _providers.postValue(repo.providersUnfiltered())
             }
             return _providers
         }
