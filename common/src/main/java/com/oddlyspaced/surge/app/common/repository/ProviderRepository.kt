@@ -7,6 +7,7 @@ import javax.inject.Inject
 
 class ProviderRepository @Inject constructor(private val api: Api) {
     suspend fun providers() = api.fetchAllProviders()
+    suspend fun providersUnfiltered() = api.fetchAllUnfilteredProviders()
     suspend fun services() = api.fetchServiceTags()
     suspend fun search(params: SearchParameter) = api.searchProviders(
         params.limitCount,
