@@ -12,6 +12,9 @@ interface Api {
     @GET("/provider/all")
     suspend fun fetchAllProviders(): List<Provider>
 
+    @GET("/provider/every")
+    suspend fun fetchAllUnfilteredProviders(): List<Provider>
+
     @GET("/provider/services")
     suspend fun fetchServiceTags(): ArrayList<Service>
 
