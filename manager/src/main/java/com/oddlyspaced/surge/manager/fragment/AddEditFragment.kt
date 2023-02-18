@@ -14,7 +14,7 @@ import com.oddlyspaced.surge.app.common.applyFrom
 import com.oddlyspaced.surge.app.common.asGeoPoint
 import com.oddlyspaced.surge.manager.BuildConfig
 import com.oddlyspaced.surge.manager.R
-import com.oddlyspaced.surge.manager.databinding.FragmentAddBinding
+import com.oddlyspaced.surge.manager.databinding.FragmentAddEditBinding
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -26,19 +26,19 @@ import org.osmdroid.views.CustomZoomButtonsController
 import org.osmdroid.views.overlay.Marker
 
 @AndroidEntryPoint
-class AddFragment: Fragment(R.layout.fragment_add) {
+class AddEditFragment: Fragment(R.layout.fragment_add_edit) {
 
     private lateinit var userLocationMarker: Marker
     private var currentMarker: Marker? = null
 
-    private lateinit var binding: FragmentAddBinding
+    private lateinit var binding: FragmentAddEditBinding
 
     private val locationFetcher = locationFetcher("We need your permission to use your location for showing nearby items") {
         this.applyFrom(AffinityConfiguration.locationFetcherGlobalConfig)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        binding = FragmentAddBinding.bind(view)
+        binding = FragmentAddEditBinding.bind(view)
 
         initOSMDroid()
         CoroutineScope(Dispatchers.IO).launch {
@@ -73,7 +73,7 @@ class AddFragment: Fragment(R.layout.fragment_add) {
                 Logger.d("ERROR: $error")
             }, { location ->
                 val userPoint = location.asGeoPoint()
-                if (this@AddFragment::userLocationMarker.isInitialized) {
+                if (this@AddEditFragment::userLocationMarker.isInitialized) {
                     requireActivity().runOnUiThread {
                         binding.map.overlays.remove(userLocationMarker)
                     }

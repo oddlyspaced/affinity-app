@@ -16,7 +16,7 @@
     </fragment>
     <fragment
         android:id="@+id/addFragment"
-        android:name="com.oddlyspaced.surge.manager.fragment.AddFragment"
+        android:name="com.oddlyspaced.surge.manager.fragment.AddEditFragment"
         android:label="fragment_add"
-        tools:layout="@layout/fragment_add" />
+        tools:layout="@layout/fragment_add_edit" />
 </navigation>
