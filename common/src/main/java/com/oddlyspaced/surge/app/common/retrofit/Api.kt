@@ -10,7 +10,7 @@ import retrofit2.http.Query
 
 interface Api {
     @GET("/provider/all")
-    suspend fun fetchAllProviders(): ArrayList<Provider>
+    suspend fun fetchAllProviders(): List<Provider>
 
     @GET("/provider/services")
     suspend fun fetchServiceTags(): ArrayList<Service>
