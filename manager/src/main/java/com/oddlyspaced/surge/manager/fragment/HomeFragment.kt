@@ -6,8 +6,10 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.oddlyspaced.surge.app.common.modal.Provider
 import com.oddlyspaced.surge.manager.R
+import com.oddlyspaced.surge.manager.adapter.ProviderListAdapter
 import com.oddlyspaced.surge.manager.databinding.FragmentHomeBinding
 import com.oddlyspaced.surge.manager.viewmodel.ManagerViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -30,7 +32,7 @@ class HomeFragment: Fragment(R.layout.fragment_home) {
         }
     }
 
-    private fun displayProviders(providers: ArrayList<Provider>) {
+    private fun displayProviders(providers: List<Provider>) {
         if (providers.isEmpty()) {
             binding.rvHomeProviderList.isVisible = false
             binding.layoutHomeLoading.isVisible = true
@@ -40,6 +42,10 @@ class HomeFragment: Fragment(R.layout.fragment_home) {
         else {
             binding.rvHomeProviderList.isVisible = true
             binding.layoutHomeLoading.isVisible = false
+            binding.rvHomeProviderList.apply {
+                layoutManager = LinearLayoutManager(requireContext())
+                adapter = ProviderListAdapter(providers)
+            }
         }
     }
 
