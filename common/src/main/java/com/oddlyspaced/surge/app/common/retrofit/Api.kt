@@ -1,16 +1,25 @@
 package com.oddlyspaced.surge.app.common.retrofit
 
-import com.oddlyspaced.surge.app.common.modal.Location
 import com.oddlyspaced.surge.app.common.modal.Provider
+import com.oddlyspaced.surge.app.common.modal.ProviderStatus
 import com.oddlyspaced.surge.app.common.modal.Service
+import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Query
 
-
 interface Api {
+
+    @POST("/provider/add")
+    suspend fun addProvider(@Body provider: Provider)
+
     @GET("/provider/all")
-    suspend fun fetchAllProviders(): List<Provider>
+    suspend fun fetchAllProviders(@Query("status") status: ProviderStatus): List<Provider>
+
+    @GET("/provider/specific")
+    suspend fun getProvider(
+        @Query("id") id: Int
+    ): Provider
 
     @GET("/provider/every")
     suspend fun fetchAllUnfilteredProviders(): List<Provider>
@@ -28,12 +37,11 @@ interface Api {
         @Query("dropLon") dropLon: Double,
     ): ArrayList<Provider>
 
-    @GET("/provider/specific")
-    suspend fun getProvider(
-        @Query("id") id: Int
-    ): Provider
+    @POST("/provider/update/location")
+    suspend fun updateProviderLocation(
 
-    @POST("/provider/areaupdate")
+    )
+
     suspend fun updateProviderArea(
         @Query("id") id: Int,
         @Query("sourceLat") lat: Double,
