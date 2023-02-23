@@ -11,5 +11,4 @@ class SearchParameter(
     val pickupLon: Double,
     val dropLat: Double,
     val dropLon: Double,
-    val filterServices: ArrayList<String>
 ): Parcelable
