@@ -15,6 +15,8 @@ import javax.inject.Inject
 @HiltViewModel
 class ManagerViewModel @Inject constructor(private val repo: ProviderRepository) : ViewModel() {
 
+    suspend fun addProvider(name: String, phone: PhoneNumber, location: Location, services: ArrayList<String>, areaServed: AreaServed) = repo.addProvider(name, phone, location, services, areaServed)
+
     private val _providers = MutableLiveData<List<Provider>>()
     val providers: LiveData<List<Provider>>
         get() {
