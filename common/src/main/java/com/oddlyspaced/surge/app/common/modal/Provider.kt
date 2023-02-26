@@ -9,12 +9,11 @@ import kotlinx.parcelize.Parcelize
  */
 @Parcelize
 data class Provider(
-    val id: Int, // unique id for provider
+    val id: Int = -1, // unique id for provider
     val name: String, // name of provider
     val phone: PhoneNumber, // phone number of provider
     val location: Location,
     val services: ArrayList<String>, // tags of all the services the provider offers
     var areaServed: AreaServed, // area served by provider
-    var isActive: ProviderStatus,
-
+    var status: ProviderStatus,
 ): Parcelable
