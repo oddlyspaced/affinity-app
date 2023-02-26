@@ -1,12 +1,20 @@
 package com.oddlyspaced.surge.app.common.repository
 
-import com.oddlyspaced.surge.app.common.modal.Location
-import com.oddlyspaced.surge.app.common.modal.ProviderStatus
-import com.oddlyspaced.surge.app.common.modal.SearchParameter
+import com.oddlyspaced.surge.app.common.modal.*
 import com.oddlyspaced.surge.app.common.retrofit.Api
 import javax.inject.Inject
 
 class ProviderRepository @Inject constructor(private val api: Api) {
+    suspend fun addProvider(name: String, phone: PhoneNumber, location: Location, services: ArrayList<String>, areaServed: AreaServed) = api.addProvider(
+        Provider(
+            name = name,
+            phone = phone,
+            location = location,
+            services = services,
+            areaServed = areaServed,
+            status = ProviderStatus.ACTIVE // not required
+        )
+    )
     suspend fun providers() = api.fetchAllProviders(status = ProviderStatus.ACTIVE)
     suspend fun providersUnfiltered() = api.fetchAllUnfilteredProviders()
     suspend fun services() = api.fetchServiceTags()
