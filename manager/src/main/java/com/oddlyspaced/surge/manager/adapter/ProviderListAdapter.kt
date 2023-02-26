@@ -5,7 +5,9 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.oddlyspaced.surge.app.common.modal.Provider
+import com.oddlyspaced.surge.app.common.modal.ProviderStatus
 import com.oddlyspaced.surge.manager.databinding.ItemProviderBinding
+import java.util.*
 
 class ProviderListAdapter(private val items: List<Provider>) : RecyclerView.Adapter<ProviderListAdapter.ViewHolder>() {
 
@@ -14,8 +16,8 @@ class ProviderListAdapter(private val items: List<Provider>) : RecyclerView.Adap
             binding.txItemProviderName.text = data.name
             binding.txItemProviderPhone.text = "${data.phone.countryCode} ${data.phone.phoneNumber}"
             binding.txItemProviderServices.text = data.services.joinToString(", ")
-            binding.txItemProviderStatus.text = if (data.isActive) "Active" else "Inactive"
-            binding.txItemProviderStatus.setTextColor(if (data.isActive) Color.GREEN else Color.RED)
+            binding.txItemProviderStatus.text = data.status.toString()
+            binding.txItemProviderStatus.setTextColor(if (data.status == ProviderStatus.ACTIVE) Color.GREEN else Color.RED)
         }
     }
 
