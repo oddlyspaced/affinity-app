@@ -15,8 +15,8 @@ class ProviderRepository @Inject constructor(private val api: Api) {
             status = ProviderStatus.ACTIVE // not required
         )
     )
-    suspend fun providers() = api.fetchAllProviders(status = ProviderStatus.ACTIVE)
-    suspend fun providersUnfiltered() = api.fetchAllUnfilteredProviders()
+    suspend fun providers() = api.fetchProviders(status = ProviderStatus.ACTIVE)
+    suspend fun providersUnfiltered() = api.fetchProviders(status = ProviderStatus.UNDEFINED)
     suspend fun services() = api.fetchServiceTags()
     suspend fun search(params: SearchParameter) = api.searchProviders(
         params.limitCount,
