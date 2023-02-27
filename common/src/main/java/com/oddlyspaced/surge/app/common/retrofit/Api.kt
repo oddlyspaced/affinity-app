@@ -14,15 +14,12 @@ interface Api {
     suspend fun addProvider(@Body provider: Provider)
 
     @GET("/provider/all")
-    suspend fun fetchAllProviders(@Query("status") status: ProviderStatus): List<Provider>
+    suspend fun fetchProviders(@Query("status") status: ProviderStatus): List<Provider>
 
     @GET("/provider/specific")
     suspend fun getProvider(
         @Query("id") id: Int
     ): Provider
-
-    @GET("/provider/every")
-    suspend fun fetchAllUnfilteredProviders(): List<Provider>
 
     @GET("/provider/services")
     suspend fun fetchServiceTags(): ArrayList<Service>
