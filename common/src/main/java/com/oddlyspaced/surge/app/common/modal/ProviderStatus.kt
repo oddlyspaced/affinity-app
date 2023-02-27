@@ -5,3 +5,10 @@ enum class ProviderStatus {
     INACTIVE,
     UNDEFINED,
 }
+fun ProviderStatus.flip(): ProviderStatus {
+    return when (this) {
+        ProviderStatus.ACTIVE -> ProviderStatus.INACTIVE
+        ProviderStatus.INACTIVE -> ProviderStatus.ACTIVE
+        ProviderStatus.UNDEFINED -> ProviderStatus.UNDEFINED
+    }
+}
