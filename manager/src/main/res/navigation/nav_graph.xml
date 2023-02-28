@@ -18,5 +18,14 @@
         android:id="@+id/addFragment"
         android:name="com.oddlyspaced.surge.manager.fragment.AddEditFragment"
         android:label="fragment_add"
-        tools:layout="@layout/fragment_add_edit" />
+        tools:layout="@layout/fragment_add_edit" >
+        <action
+            android:id="@+id/action_addFragment_to_editFragment"
+            app:destination="@id/editFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/editFragment"
+        android:name="com.oddlyspaced.surge.manager.fragment.EditSourceLocationFragment"
+        android:label="fragment_edit"
+        tools:layout="@layout/fragment_edit_source_location" />
 </navigation>
