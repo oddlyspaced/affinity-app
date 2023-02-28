@@ -7,6 +7,7 @@ import android.view.View
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import com.freelapp.libs.locationfetcher.locationFetcher
 import com.oddlyspaced.surge.app.common.AffinityConfiguration
 import com.oddlyspaced.surge.app.common.Logger
@@ -44,6 +45,7 @@ class AddEditFragment: Fragment(R.layout.fragment_add_edit) {
         CoroutineScope(Dispatchers.IO).launch {
             markCurrentLocation()
         }
+        init()
     }
 
     // handles runtime map configuration
@@ -91,6 +93,16 @@ class AddEditFragment: Fragment(R.layout.fragment_add_edit) {
                 }
             })
         }
-
     }
+
+    private fun init() {
+        binding.viewTouchMap.setOnClickListener {
+            findNavController().navigate(AddEditFragmentDirections.actionAddFragmentToEditFragment())
+        }
+
+        binding.btnAddEditSave.setOnClickListener {
+            findNavController().popBackStack()
+        }
+    }
+
 }
