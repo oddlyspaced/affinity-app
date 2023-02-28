@@ -1,5 +1,6 @@
 package com.oddlyspaced.surge.manager.fragment
 
+import android.graphics.Canvas
 import android.graphics.Color
 import android.os.Bundle
 import android.view.MotionEvent
@@ -28,12 +29,15 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import org.osmdroid.api.IGeoPoint
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.CustomZoomButtonsController
 import org.osmdroid.views.MapView
+import org.osmdroid.views.overlay.ItemizedIconOverlay
 import org.osmdroid.views.overlay.Marker
 import org.osmdroid.views.overlay.Overlay
+import org.osmdroid.views.overlay.OverlayItem
 import org.osmdroid.views.overlay.Polygon
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
@@ -128,13 +132,35 @@ class EditSourceLocationFragment: Fragment(R.layout.fragment_edit_source_locatio
     // handle touches on map
     private fun setupTouchTargetOverlay() {
         val overlay = object : Overlay() {
+            var items: ItemizedIconOverlay<OverlayItem>? = null
+
+            override fun draw(pCanvas: Canvas?, pMapView: MapView?, pShadow: Boolean) {
+            }
+
             override fun onSingleTapConfirmed(e: MotionEvent, mapView: MapView): Boolean {
-                val projection = binding.map.projection
-                val loc = projection.fromPixels(e.x.toInt(), e.y.toInt())
-                setAddressForLocation(loc.asGeoPoint().asLocation())
-                Logger.d("${loc.latitude} | ${loc.longitude}")
-                binding.map.controller.setCenter(loc.asGeoPoint())
-                addMarker(loc.asGeoPoint())
+                val projection = mapView.projection
+                val location = projection.fromPixels(e.x.toInt(), e.y.toInt())
+                val lon = location.longitude
+                val lat = location.latitude
+                setAddressForLocation(Location(lat, lon))
+
+                val markers = arrayListOf<OverlayItem>()
+                val item = OverlayItem("", "", GeoPoint(lat, lon))
+                item.setMarker(ContextCompat.getDrawable(requireContext(), com.oddlyspaced.surge.app.common.R.drawable.ic_location))
+                markers.add(item)
+
+                if (items == null) {
+                    items = ItemizedIconOverlay(requireActivity(), markers, null)
+                    binding.map.overlays.add(items)
+                    binding.map.invalidate()
+                }
+                else {
+                    binding.map.overlays.remove(items)
+                    binding.map.invalidate()
+                    items = ItemizedIconOverlay(requireActivity(), markers, null)
+                    binding.map.overlays.add(items)
+                }
+                createCircleAroundPoint(GeoPoint(lat, lon), binding.sliderEditDistance.value.toDouble())
                 return true
             }
         }
