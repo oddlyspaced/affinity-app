@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.oddlyspaced.surge.app.common.Logger
 import com.oddlyspaced.surge.app.common.modal.*
+import com.oddlyspaced.surge.app.common.repository.LocationRepository
 import com.oddlyspaced.surge.app.common.repository.ProviderRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -13,8 +14,12 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class ManagerViewModel @Inject constructor(private val repo: ProviderRepository) : ViewModel() {
+class ManagerViewModel @Inject constructor(private val repo: ProviderRepository, private val locationRepository: LocationRepository) : ViewModel() {
 
+    var sourcePointAddress: Address? = null
+    var sourcePointWorkingRadius: Double = -1.0
+
+    fun addressFromLocation(location: Location, zoom: Int) = locationRepository.address(location, zoom)
     suspend fun addProvider(name: String, phone: PhoneNumber, location: Location, services: ArrayList<String>, areaServed: AreaServed) = repo.addProvider(name, phone, location, services, areaServed)
 
     private val _providers = MutableLiveData<List<Provider>>()
