@@ -53,11 +53,15 @@ class AddEditFragment: Fragment(R.layout.fragment_add_edit) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         binding = FragmentAddEditBinding.bind(view)
         initOSMDroid()
-        CoroutineScope(Dispatchers.IO).launch {
-//            markCurrentLocation()
+        if (vm.sourcePointAddress == null) {
+            CoroutineScope(Dispatchers.IO).launch {
+                markCurrentLocation()
+            }
+        }
+        else {
+            markSelectedSourceLocation()
         }
         init()
-        markSelectedSourceLocation()
     }
 
     // handles runtime map configuration
