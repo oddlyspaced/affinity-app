@@ -2,6 +2,7 @@ package com.oddlyspaced.surge.app.common.retrofit
 
 import com.oddlyspaced.surge.app.common.modal.Provider
 import com.oddlyspaced.surge.app.common.modal.ProviderStatus
+import com.oddlyspaced.surge.app.common.modal.ResponseError
 import com.oddlyspaced.surge.app.common.modal.Service
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -11,7 +12,7 @@ import retrofit2.http.Query
 interface Api {
 
     @POST("/provider/add")
-    suspend fun addProvider(@Body provider: Provider)
+    suspend fun addProvider(@Body provider: Provider): ResponseError
 
     @GET("/provider/all")
     suspend fun fetchProviders(@Query("status") status: ProviderStatus): List<Provider>
