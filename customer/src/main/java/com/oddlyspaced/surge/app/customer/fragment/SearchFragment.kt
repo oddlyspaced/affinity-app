@@ -113,7 +113,6 @@ class SearchFragment: Fragment(R.layout.fragment_search) {
                         pickup.lon,
                         drop.lat,
                         drop.lon,
-                        arrayListOf()
                     )
                 ).observe(requireActivity()) {
                     Logger.d("Search res: ${it.size} \n $it.toStr")

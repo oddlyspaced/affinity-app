@@ -17,8 +17,8 @@ import javax.inject.Inject
 class HomeViewModel @Inject constructor(private val repo: ProviderRepository, private val locationRepository: LocationRepository): ViewModel() {
 
     private var providersFetchedAt = 0L
-    private val _providers = MutableLiveData<ArrayList<Provider>>()
-    val providers: LiveData<ArrayList<Provider>>
+    private val _providers = MutableLiveData<List<Provider>>()
+    val providers: LiveData<List<Provider>>
     get() {
         if (System.currentTimeMillis() - providersFetchedAt > 5 * 1000L) {
             // need to refresh
