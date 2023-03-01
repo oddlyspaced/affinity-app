@@ -6,15 +6,16 @@ import android.preference.PreferenceManager
 import android.view.View
 import android.widget.Toast
 import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.freelapp.libs.locationfetcher.locationFetcher
-import com.oddlyspaced.surge.app.common.AffinityConfiguration
-import com.oddlyspaced.surge.app.common.Logger
-import com.oddlyspaced.surge.app.common.applyFrom
-import com.oddlyspaced.surge.app.common.asGeoPoint
+import com.oddlyspaced.surge.app.common.*
+import com.oddlyspaced.surge.app.common.modal.AreaServed
+import com.oddlyspaced.surge.app.common.modal.Location
+import com.oddlyspaced.surge.app.common.modal.PhoneNumber
 import com.oddlyspaced.surge.app.common.modal.asGeoPoint
 import com.oddlyspaced.surge.manager.BuildConfig
 import com.oddlyspaced.surge.manager.R
@@ -117,7 +118,83 @@ class AddEditFragment: Fragment(R.layout.fragment_add_edit) {
         }
 
         binding.btnAddEditSave.setOnClickListener {
-            findNavController().popBackStack()
+            handleSave()
+        }
+    }
+
+    private fun handleSave() {
+        binding.etAddEditName.text.let { name ->
+            if (name.isEmpty()) {
+                Toast.makeText(requireContext(), "Please enter a name", Toast.LENGTH_SHORT).show()
+                return
+            }
+        }
+        binding.etAddEditCode.text.let { code ->
+            if (code.isEmpty()) {
+                Toast.makeText(requireContext(), "Please enter a phone number code", Toast.LENGTH_SHORT).show()
+                return
+            }
+        }
+        binding.etAddEditPhone.text.let { phone ->
+            if (phone.isEmpty()) {
+                Toast.makeText(requireContext(), "Please enter a phone number", Toast.LENGTH_SHORT).show()
+                return
+            }
+        }
+        binding.etAddEditServices.text.let { services ->
+            if (services.isEmpty()) {
+                Toast.makeText(requireContext(), "Please enter services list", Toast.LENGTH_SHORT).show()
+                return
+            }
+//            if (services.split(",").toTypedArray())
+        }
+        vm.sourcePointAddress?.let {} ?: run {
+            Toast.makeText(requireContext(), "Please select area to be served", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        CoroutineScope(Dispatchers.IO).launch {
+            locationFetcher.location.collectLatest {
+                it.fold({ error ->
+                    Toast.makeText(requireContext(), "Error occurred while fetching location.", Toast.LENGTH_SHORT).show()
+                    Logger.d("ERROR: $error")
+                }, { location ->
+                    requireActivity().runOnUiThread {
+                        binding.layoutAddSaving.isVisible = true
+                        vm.addProvider(
+                            name = binding.etAddEditName.text.toString(),
+                            phone = PhoneNumber(
+                                countryCode = binding.etAddEditCode.text.toString(),
+                                phoneNumber = binding.etAddEditPhone.text.toString()
+                            ),
+                            location = location.asGeoPoint().asLocation(),
+                            services = arrayListOf<String>().apply {
+                                addAll(
+                                    binding.etAddEditServices.text.toString().split(",")
+                                )
+                            },
+                            areaServed = AreaServed(vm.sourcePointAddress!!.location, vm.sourcePointWorkingRadius)
+                        ).observe(requireActivity()) { response ->
+                            if (response.error) {
+                                Toast.makeText(
+                                    requireContext(),
+                                    "An error occured while trying to save provider!",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                                binding.layoutAddSaving.isVisible = false
+                            } else {
+                                Toast.makeText(
+                                    requireContext(),
+                                    "Provider saved successfully",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                                findNavController().popBackStack()
+                            }
+                        }
+                    }
+                })
+            }
+
         }
     }
 
