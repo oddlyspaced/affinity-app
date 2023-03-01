@@ -104,10 +104,6 @@ class EditSourceLocationFragment: Fragment(R.layout.fragment_edit_source_locatio
         binding.cardEditSave.setOnClickListener {
             vm.sourcePointAddress = currentAddress
             vm.sourcePointWorkingRadius = binding.sliderEditDistance.value.toDouble()
-            // todo: post this to server
-//            homeViewModel.updateProviderSourceArea(1, homeViewModel.sourcePointAddress!!.location,
-//                homeViewModel.sourcePointWorkingRadius
-//            )
             findNavController().popBackStack()
         }
 
