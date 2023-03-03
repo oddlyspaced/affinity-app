@@ -21,7 +21,6 @@ class ManagerViewModel @Inject constructor(private val repo: ProviderRepository,
 
     fun addressFromLocation(location: Location, zoom: Int) = locationRepository.address(location, zoom)
 
-
     fun addProvider(name: String, phone: PhoneNumber, location: Location, services: ArrayList<String>, areaServed: AreaServed): LiveData<ResponseError> {
         val data = MutableLiveData<ResponseError>()
         CoroutineScope(Dispatchers.IO).launch {
@@ -30,8 +29,13 @@ class ManagerViewModel @Inject constructor(private val repo: ProviderRepository,
         return data
     }
 
-
-
+    fun fetchProvider(id: Int): LiveData<Provider> {
+        val data = MutableLiveData<Provider>()
+        CoroutineScope(Dispatchers.IO).launch {
+            data.postValue(repo.provider(id))
+        }
+        return data
+    }
 
     private val _providers = MutableLiveData<List<Provider>>()
     val providers: LiveData<List<Provider>>
