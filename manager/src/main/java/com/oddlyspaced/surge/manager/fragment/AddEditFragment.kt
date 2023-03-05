@@ -14,10 +14,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.freelapp.libs.locationfetcher.locationFetcher
 import com.oddlyspaced.surge.app.common.*
-import com.oddlyspaced.surge.app.common.modal.AreaServed
-import com.oddlyspaced.surge.app.common.modal.Location
-import com.oddlyspaced.surge.app.common.modal.PhoneNumber
-import com.oddlyspaced.surge.app.common.modal.asGeoPoint
+import com.oddlyspaced.surge.app.common.modal.*
 import com.oddlyspaced.surge.manager.BuildConfig
 import com.oddlyspaced.surge.manager.R
 import com.oddlyspaced.surge.manager.databinding.FragmentAddEditBinding
@@ -67,9 +64,24 @@ class AddEditFragment: Fragment(R.layout.fragment_add_edit) {
             }
         }
         else {
-            Toast.makeText(requireContext(), "Provider: ${args.providerId}", Toast.LENGTH_SHORT).show()
+            loadProviderDetails(args.providerId)
         }
         init()
+    }
+
+    private fun loadProviderDetails(id: Int) {
+        vm.fetchProvider(id).observe(requireActivity()) {
+            setProviderDetails(it)
+        }
+    }
+
+    private fun setProviderDetails(provider: Provider) {
+        binding.etAddEditName.setText(provider.name)
+        binding.etAddEditCode.setText(provider.phone.countryCode)
+        binding.etAddEditPhone.setText(provider.phone.phoneNumber)
+        binding.etAddEditServices.setText(provider.services.joinToString(","))
+        vm.sourcePointAddress = Address(provider.location, "")
+        markSelectedSourceLocation()
     }
 
     // handles runtime map configuration
