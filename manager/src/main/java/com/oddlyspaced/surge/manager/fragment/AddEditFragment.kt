@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.freelapp.libs.locationfetcher.locationFetcher
 import com.oddlyspaced.surge.app.common.*
 import com.oddlyspaced.surge.app.common.modal.AreaServed
@@ -46,6 +47,7 @@ class AddEditFragment: Fragment(R.layout.fragment_add_edit) {
 
     private lateinit var binding: FragmentAddEditBinding
     private val vm: ManagerViewModel by activityViewModels()
+    private val args: AddEditFragmentArgs by navArgs()
 
     private val locationFetcher = locationFetcher("We need your permission to use your location for showing nearby items") {
         this.applyFrom(AffinityConfiguration.locationFetcherGlobalConfig)
@@ -54,13 +56,18 @@ class AddEditFragment: Fragment(R.layout.fragment_add_edit) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         binding = FragmentAddEditBinding.bind(view)
         initOSMDroid()
-        if (vm.sourcePointAddress == null) {
-            CoroutineScope(Dispatchers.IO).launch {
-                markCurrentLocation()
+
+        if (args.providerId == -1) { // no provider id passed
+            if (vm.sourcePointAddress == null) {
+                CoroutineScope(Dispatchers.IO).launch {
+                    markCurrentLocation()
+                }
+            } else {
+                markSelectedSourceLocation()
             }
         }
         else {
-            markSelectedSourceLocation()
+            Toast.makeText(requireContext(), "Provider: ${args.providerId}", Toast.LENGTH_SHORT).show()
         }
         init()
     }
