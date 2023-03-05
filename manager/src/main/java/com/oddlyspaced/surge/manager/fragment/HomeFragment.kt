@@ -44,7 +44,7 @@ class HomeFragment: Fragment(R.layout.fragment_home) {
             binding.layoutHomeLoading.isVisible = false
             binding.rvHomeProviderList.apply {
                 layoutManager = LinearLayoutManager(requireContext())
-                adapter = ProviderListAdapter(providers)
+                adapter = ProviderListAdapter(providers, findNavController())
             }
         }
     }
