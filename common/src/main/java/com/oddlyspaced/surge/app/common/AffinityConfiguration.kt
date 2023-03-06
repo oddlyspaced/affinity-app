@@ -26,5 +26,6 @@ class AffinityConfiguration {
             ),
             numUpdates = Int.MAX_VALUE,
         )
+        const val SHARED_PREFERENCE_NAME = "prefs"
     }
 }
