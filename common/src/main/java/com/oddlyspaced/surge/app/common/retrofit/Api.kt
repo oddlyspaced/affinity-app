@@ -17,6 +17,9 @@ interface Api {
     @POST("/provider/add")
     suspend fun addProvider(@Body provider: Provider): ResponseError
 
+    @POST("/provider/remove")
+    suspend fun removeProvider(@Query("id") id: Int): ResponseError
+
     @GET("/provider/all")
     suspend fun fetchProviders(@Query("status") status: ProviderStatus): List<Provider>
 
