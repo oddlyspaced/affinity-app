@@ -9,9 +9,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
-import com.freelapp.libs.locationfetcher.LocationFetcher
 import com.freelapp.libs.locationfetcher.locationFetcher
-import com.google.android.gms.location.LocationRequest
 import com.oddlyspaced.surge.app.common.AffinityConfiguration
 import com.oddlyspaced.surge.app.common.Logger
 import com.oddlyspaced.surge.app.common.applyFrom
@@ -34,8 +32,6 @@ import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.CustomZoomButtonsController
 import org.osmdroid.views.overlay.Marker
 import org.osmdroid.views.overlay.Polygon
-import kotlin.time.Duration.Companion.minutes
-import kotlin.time.Duration.Companion.seconds
 
 @AndroidEntryPoint
 class HomeFragment : Fragment(R.layout.fragment_home) {
@@ -45,7 +41,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
     private lateinit var binding: FragmentHomeBinding
 
-    private val homeViewModel: ProviderViewModel by activityViewModels()
+    private val vm: ProviderViewModel by activityViewModels()
     private var status = ProviderStatus.UNDEFINED
 
     private val locationFetcher = locationFetcher("We need permission to fetch location") {
@@ -64,15 +60,15 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
     override fun onResume() {
         super.onResume()
-        homeViewModel.sourcePointAddress?.let { sourceAddress ->
+        vm.sourcePointAddress?.let { sourceAddress ->
             addMarker(sourceAddress.location.asGeoPoint())
-            createCircleAroundPoint(sourceAddress.location.asGeoPoint(), homeViewModel.sourcePointWorkingRadius.toDouble())
+            createCircleAroundPoint(sourceAddress.location.asGeoPoint(), vm.sourcePointWorkingRadius.toDouble())
             binding.textHomeStatus.text = if (status == ProviderStatus.ACTIVE) "Status: Active" else "Status: In Active"
             binding.textHomeStatus.setTextColor(if (status == ProviderStatus.ACTIVE) Color.GREEN else Color.RED)
             // todo: fix update provider status
 //            homeViewModel.updateProviderStatus(0, isActive)
         } ?: run {
-            homeViewModel.getProviderInfo(1).observe(requireActivity()) {
+            vm.getProviderInfo(1).observe(requireActivity()) {
                 addMarker(it.areaServed.source.asGeoPoint())
                 createCircleAroundPoint(it.areaServed.source.asGeoPoint(), it.areaServed.radius)
                 binding.textHomeStatus.text = "Status: ${it.status}"
