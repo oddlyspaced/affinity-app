@@ -7,9 +7,11 @@ import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.Settings
+import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
+import androidx.core.view.isVisible
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.oddlyspaced.surge.app.common.databinding.ActivityCheckBinding
 import com.oddlyspaced.surge.app.provider.R
@@ -42,8 +44,8 @@ class LoginActivity : AppCompatActivity() {
             }
         }
         handleLocationPermission()
+        init()
     }
-
 
     private fun handleLocationPermission() {
         if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -102,6 +104,38 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun init() {
-        
+        binding.btnLogin.setOnClickListener {
+            login()
+        }
+    }
+
+    private fun login() {
+        val id = binding.etLoginId.text.toString()
+        val pass = binding.etLoginPass.text.toString()
+
+        if (id.isEmpty()) {
+            Toast.makeText(applicationContext, "Enter ID!", Toast.LENGTH_SHORT).show()
+            return
+        }
+        if (pass.isEmpty()) {
+            Toast.makeText(applicationContext, "Enter Password!", Toast.LENGTH_SHORT).show()
+            return
+        }
+        // using this in place of isLoggingIn
+        if (binding.pbLoginLoading.isVisible) {
+            Toast.makeText(applicationContext, "Please wait!", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        binding.pbLoginLoading.isVisible = true
+        vm.authenticate(id.toInt(), pass).observe(this) {
+            binding.pbLoginLoading.isVisible = false
+            if (it.error) {
+                Toast.makeText(applicationContext, "Unable to login", Toast.LENGTH_SHORT).show()
+            }
+            else {
+                startActivity(Intent(this, MainActivity::class.java))
+            }
+        }
     }
 }
