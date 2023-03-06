@@ -12,7 +12,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.oddlyspaced.surge.manager.databinding.ActivityCheckBinding
+import com.oddlyspaced.surge.app.common.databinding.ActivityCheckBinding
 import com.oddlyspaced.surge.manager.viewmodel.ManagerViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -85,8 +85,19 @@ class CheckActivity : AppCompatActivity() {
                 startActivity(Intent(applicationContext, MainActivity::class.java))
             }
             else {
-                Toast.makeText(applicationContext, "Server Down", Toast.LENGTH_SHORT).show()
+                showServerUnavailablePrompt()
             }
         }
+    }
+
+    private fun showServerUnavailablePrompt() {
+        MaterialAlertDialogBuilder(this).apply {
+            setTitle("Unable to reach server")
+            setMessage("Unable to establish connection to server, please check your internet connection.")
+            setPositiveButton("Exit") { _, _ ->
+                finishAffinity()
+            }
+            setCancelable(false)
+        }.show()
     }
 }
