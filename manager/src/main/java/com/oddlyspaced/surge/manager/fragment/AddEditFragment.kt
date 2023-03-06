@@ -183,6 +183,7 @@ class AddEditFragment: Fragment(R.layout.fragment_add_edit) {
                     requireActivity().runOnUiThread {
                         binding.layoutAddSaving.isVisible = true
                         vm.addProvider(
+                            id = args.providerId,
                             name = binding.etAddEditName.text.toString(),
                             phone = PhoneNumber(
                                 countryCode = binding.etAddEditCode.text.toString(),
