@@ -11,21 +11,13 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import com.freelapp.libs.locationfetcher.locationFetcher
 import com.oddlyspaced.surge.app.common.*
-import com.oddlyspaced.surge.app.common.modal.Address
-import com.oddlyspaced.surge.app.common.modal.AreaServed
-import com.oddlyspaced.surge.app.common.modal.PhoneNumber
-import com.oddlyspaced.surge.app.common.modal.Provider
+import com.oddlyspaced.surge.app.common.modal.*
 import com.oddlyspaced.surge.manager.BuildConfig
 import com.oddlyspaced.surge.manager.R
 import com.oddlyspaced.surge.manager.databinding.FragmentAddEditBinding
 import com.oddlyspaced.surge.manager.viewmodel.ManagerViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
 import org.osmdroid.config.Configuration
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.util.GeoPoint
@@ -39,7 +31,6 @@ import org.osmdroid.views.overlay.Polygon
 class AddEditFragment: Fragment(R.layout.fragment_add_edit) {
 
     private lateinit var userLocationMarker: Marker
-    private lateinit var currentMarker: Marker
 
     private val polygonGeoPoints = arrayListOf<GeoPoint>()
     private lateinit var areaPolygon: Polygon
@@ -48,20 +39,15 @@ class AddEditFragment: Fragment(R.layout.fragment_add_edit) {
     private val vm: ManagerViewModel by activityViewModels()
     private val args: AddEditFragmentArgs by navArgs()
 
-    private val locationFetcher = locationFetcher("We need your permission to use your location for showing nearby items") {
-        this.applyFrom(AffinityConfiguration.locationFetcherGlobalConfig)
-    }
+    private var isAddingProvider = false
+    private val navController by lazy { findNavController() }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         binding = FragmentAddEditBinding.bind(view)
         initOSMDroid()
 
         if (args.providerId == -1) { // no provider id passed
-            if (vm.sourcePointAddress == null) {
-                CoroutineScope(Dispatchers.IO).launch {
-                    markCurrentLocation()
-                }
-            } else {
+            if (vm.sourcePointAddress != null) {
                 markSelectedSourceLocation()
             }
         }
@@ -106,33 +92,6 @@ class AddEditFragment: Fragment(R.layout.fragment_add_edit) {
         binding.map.controller.setZoom(AffinityConfiguration.DEFAULT_MAP_ZOOM)
     }
 
-    private suspend fun markCurrentLocation() {
-        locationFetcher.location.collectLatest {
-            it.fold({ error ->
-                Toast.makeText(requireContext(), "Error occurred while fetching location.", Toast.LENGTH_SHORT).show()
-                Logger.d("ERROR: $error")
-            }, { location ->
-                val userPoint = location.asGeoPoint()
-                if (this@AddEditFragment::userLocationMarker.isInitialized) {
-                    requireActivity().runOnUiThread {
-                        binding.map.overlays.remove(userLocationMarker)
-                    }
-                }
-                userLocationMarker = Marker(binding.map).apply {
-                    position = userPoint
-                    setAnchor(Marker.ANCHOR_BOTTOM, Marker.ANCHOR_BOTTOM)
-                    icon = ContextCompat.getDrawable(requireContext(), com.oddlyspaced.surge.app.common.R.drawable.ic_location)?.apply { setTint(
-                        Color.BLUE) }
-                    setInfoWindow(null)
-                }
-                requireActivity().runOnUiThread {
-                    binding.map.controller.setCenter(userPoint)
-                    binding.map.overlays.add(userLocationMarker)
-                }
-            })
-        }
-    }
-
     private fun init() {
         binding.viewTouchMap.setOnClickListener {
             findNavController().navigate(AddEditFragmentDirections.actionAddFragmentToEditFragment())
@@ -174,49 +133,70 @@ class AddEditFragment: Fragment(R.layout.fragment_add_edit) {
             return
         }
 
-        CoroutineScope(Dispatchers.IO).launch {
-            locationFetcher.location.collectLatest {
-                it.fold({ error ->
-                    Toast.makeText(requireContext(), "Error occurred while fetching location.", Toast.LENGTH_SHORT).show()
-                    Logger.d("ERROR: $error")
-                }, { location ->
-                    requireActivity().runOnUiThread {
-                        binding.layoutAddSaving.isVisible = true
-                        vm.addProvider(
+        if (isAddingProvider) {
+            Toast.makeText(requireContext(), "Please wait for previous call to finish", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        isAddingProvider = true
+        binding.layoutAddSaving.isVisible = true
+        vm.addProvider(
+            id = args.providerId,
+            name = binding.etAddEditName.text.toString(),
+            phone = PhoneNumber(
+                countryCode = binding.etAddEditCode.text.toString(),
+                phoneNumber = binding.etAddEditPhone.text.toString()
+            ),
+            location = Location(90.0, 135.0),
+            services = arrayListOf<String>().apply {
+                addAll(
+                    binding.etAddEditServices.text.toString().split(",")
+                )
+            },
+            areaServed = AreaServed(vm.sourcePointAddress!!.location, vm.sourcePointWorkingRadius)
+        ).observe(requireActivity()) { response ->
+            isAddingProvider = false
+            binding.layoutAddSaving.isVisible = false
+            if (response.error) {
+                Toast.makeText(requireContext(), "An error occured while trying to save provider!", Toast.LENGTH_SHORT).show()
+            }
+            else {
+                vm.providers.filter { provider ->
+                    provider.id == args.providerId
+                }.let { filteredProviders ->
+                    if (filteredProviders.isEmpty()) {
+                        // new provider
+                        vm.providers.clear()
+                    } else {
+                        // old provider, just update details
+                        Toast.makeText(
+                            requireContext(),
+                            "Provider updated successfully",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        vm.providers[vm.providers.indexOf(filteredProviders[0])] = Provider(
                             id = args.providerId,
                             name = binding.etAddEditName.text.toString(),
                             phone = PhoneNumber(
                                 countryCode = binding.etAddEditCode.text.toString(),
                                 phoneNumber = binding.etAddEditPhone.text.toString()
                             ),
-                            location = location.asGeoPoint().asLocation(),
+                            location = Location(90.0, 135.0),
                             services = arrayListOf<String>().apply {
                                 addAll(
                                     binding.etAddEditServices.text.toString().split(",")
                                 )
                             },
-                            areaServed = AreaServed(vm.sourcePointAddress!!.location, vm.sourcePointWorkingRadius)
-                        ).observe(requireActivity()) { response ->
-                            if (response.error) {
-                                Toast.makeText(
-                                    requireContext(),
-                                    "An error occured while trying to save provider!",
-                                    Toast.LENGTH_SHORT
-                                ).show()
-                                binding.layoutAddSaving.isVisible = false
-                            } else {
-                                Toast.makeText(
-                                    requireContext(),
-                                    "Provider saved successfully",
-                                    Toast.LENGTH_SHORT
-                                ).show()
-                                findNavController().popBackStack()
-                            }
-                        }
+                            areaServed = AreaServed(
+                                vm.sourcePointAddress!!.location,
+                                vm.sourcePointWorkingRadius
+                            ),
+                            status = filteredProviders[0].status
+                        )
                     }
-                })
+                }
+                navController.popBackStack()
             }
-
         }
     }
 
