@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.oddlyspaced.surge.app.common.Logger
 import com.oddlyspaced.surge.app.common.modal.*
+import com.oddlyspaced.surge.app.common.repository.GeneralRepository
 import com.oddlyspaced.surge.app.common.repository.LocationRepository
 import com.oddlyspaced.surge.app.common.repository.ProviderRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -14,7 +15,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class ManagerViewModel @Inject constructor(private val repo: ProviderRepository, private val locationRepository: LocationRepository) : ViewModel() {
+class ManagerViewModel @Inject constructor(private val repo: ProviderRepository, private val locationRepository: LocationRepository, private val generalRepository: GeneralRepository) : ViewModel() {
 
     var sourcePointAddress: Address? = null
     var sourcePointWorkingRadius: Double = -1.0
@@ -48,4 +49,17 @@ class ManagerViewModel @Inject constructor(private val repo: ProviderRepository,
             return _providers
         }
 
+    fun ping(): LiveData<ResponseError> {
+        val data = MutableLiveData<ResponseError>()
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                data.postValue(generalRepository.ping())
+            }
+            catch (e: Exception) {
+                data.postValue(ResponseError("Unable to reach server", true))
+                Logger.d("Error in ping")
+                e.printStackTrace()            }
+        }
+        return data
+    }
 }
