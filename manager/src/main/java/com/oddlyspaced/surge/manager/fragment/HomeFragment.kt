@@ -9,6 +9,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.oddlyspaced.surge.app.common.modal.Provider
+import com.oddlyspaced.surge.app.common.modal.flip
 import com.oddlyspaced.surge.manager.R
 import com.oddlyspaced.surge.manager.adapter.ProviderListAdapter
 import com.oddlyspaced.surge.manager.adapter.swipe.RecyclerTouchListener
@@ -78,6 +79,17 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                         }
                         R.id.edit_task -> {
                             // update provider for status
+                            val provider = adapter.items[position]
+                            vm.updateProviderStatus(provider.id, provider.status.flip()).observe(requireActivity()) {
+                                if (it.error) {
+                                    Toast.makeText(requireContext(), "An error occurred while trying to update status!", Toast.LENGTH_SHORT).show()
+                                }
+                                else {
+                                    provider.status = provider.status.flip()
+                                    adapter.items[position] = provider
+                                    adapter.notifyItemChanged(position)
+                                }
+                            }
                         }
                     }
                 }
