@@ -14,6 +14,7 @@
         android:layout_marginTop="16dp"
         android:fontFamily="@font/medium"
         android:text="Fetch"
+        android:visibility="gone"
         app:layout_constraintEnd_toStartOf="@+id/btn_home_sync"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -26,6 +27,7 @@
         android:layout_marginEnd="16dp"
         android:fontFamily="@font/medium"
         android:text="Sync"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/btn_home_fetch"
         app:layout_constraintTop_toTopOf="parent" />
@@ -61,11 +63,11 @@
         android:id="@+id/rv_home_provider_list"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:clipToPadding="false"
+        android:paddingBottom="64dp"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:clipToPadding="false"
-        android:paddingBottom="64dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btn_home_fetch" />
 
