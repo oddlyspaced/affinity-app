@@ -10,13 +10,11 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.freelapp.libs.locationfetcher.locationFetcher
-import com.oddlyspaced.surge.app.common.AffinityConfiguration
-import com.oddlyspaced.surge.app.common.Logger
-import com.oddlyspaced.surge.app.common.applyFrom
-import com.oddlyspaced.surge.app.common.asGeoPoint
+import com.oddlyspaced.surge.app.common.*
 import com.oddlyspaced.surge.app.common.modal.ProviderStatus
 import com.oddlyspaced.surge.app.common.modal.asGeoPoint
 import com.oddlyspaced.surge.app.common.modal.flip
+import com.oddlyspaced.surge.app.common.modal.pref.StoragePreference
 import com.oddlyspaced.surge.app.provider.BuildConfig
 import com.oddlyspaced.surge.app.provider.R
 import com.oddlyspaced.surge.app.provider.databinding.FragmentHomeBinding
@@ -50,6 +48,8 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         binding = FragmentHomeBinding.bind(view)
+
+        vm.providerId = requireContext().readPreference(StoragePreference.PREF_USER_ID) as Int
 
         initOSMDroid()
         CoroutineScope(Dispatchers.IO).launch {
