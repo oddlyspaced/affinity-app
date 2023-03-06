@@ -5,8 +5,9 @@ import com.oddlyspaced.surge.app.common.retrofit.Api
 import javax.inject.Inject
 
 class ProviderRepository @Inject constructor(private val api: Api) {
-    suspend fun addProvider(name: String, phone: PhoneNumber, location: Location, services: ArrayList<String>, areaServed: AreaServed) = api.addProvider(
+    suspend fun addProvider(id: Int, name: String, phone: PhoneNumber, location: Location, services: ArrayList<String>, areaServed: AreaServed) = api.addProvider(
         Provider(
+            id = id,
             name = name,
             phone = phone,
             location = location,
