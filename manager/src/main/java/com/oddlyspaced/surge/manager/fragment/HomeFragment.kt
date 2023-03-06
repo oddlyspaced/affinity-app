@@ -21,6 +21,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
     private lateinit var binding: FragmentHomeBinding
     private val vm: ManagerViewModel by activityViewModels()
+    private lateinit var adapter: ProviderListAdapter
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         binding = FragmentHomeBinding.bind(view)
@@ -44,9 +45,10 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         else {
             binding.rvHomeProviderList.isVisible = true
             binding.layoutHomeLoading.isVisible = false
+            adapter = ProviderListAdapter(arrayListOf<Provider>().apply { addAll(providers) }, findNavController())
             binding.rvHomeProviderList.apply {
                 layoutManager = LinearLayoutManager(requireContext())
-                adapter = ProviderListAdapter(providers, findNavController())
+                adapter = this@HomeFragment.adapter
             }
             val touchListener = RecyclerTouchListener(requireActivity(), binding.rvHomeProviderList)
             touchListener.setClickable(object : RecyclerTouchListener.OnRowClickListener {
@@ -62,10 +64,20 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                 ) { viewId, position ->
                     when (viewId) {
                         R.id.delete_task -> {
-                            Toast.makeText(requireContext(), "Not Available", Toast.LENGTH_SHORT).show()
+                            // delete provider
+                            val provider = adapter.items[position]
+                            vm.deleteProvider(provider.id).observe(requireActivity()) {
+                                if (it.error) {
+                                    Toast.makeText(requireContext(), "An error occurred while trying to remove provider!", Toast.LENGTH_SHORT).show()
+                                }
+                                else {
+                                    adapter.items.removeAt(position)
+                                    adapter.notifyItemRemoved(position)
+                                }
+                            }
                         }
                         R.id.edit_task -> {
-                            Toast.makeText(requireContext(), "Edit Not Available", Toast.LENGTH_SHORT).show()
+                            // update provider for status
                         }
                     }
                 }
