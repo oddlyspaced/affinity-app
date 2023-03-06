@@ -65,10 +65,9 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
             createCircleAroundPoint(sourceAddress.location.asGeoPoint(), vm.sourcePointWorkingRadius.toDouble())
             binding.textHomeStatus.text = if (status == ProviderStatus.ACTIVE) "Status: Active" else "Status: In Active"
             binding.textHomeStatus.setTextColor(if (status == ProviderStatus.ACTIVE) Color.GREEN else Color.RED)
-            // todo: fix update provider status
-//            homeViewModel.updateProviderStatus(0, isActive)
+            vm.updateProviderStatus(vm.providerId, status)
         } ?: run {
-            vm.getProviderInfo(1).observe(requireActivity()) {
+            vm.fetchProvider(vm.providerId).observe(requireActivity()) {
                 addMarker(it.areaServed.source.asGeoPoint())
                 createCircleAroundPoint(it.areaServed.source.asGeoPoint(), it.areaServed.radius)
                 binding.textHomeStatus.text = "Status: ${it.status}"
@@ -138,8 +137,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
             status = status.flip()
             binding.textHomeStatus.text = if (status == ProviderStatus.ACTIVE) "Status: Active" else "Status: In Active"
             binding.textHomeStatus.setTextColor(if (status == ProviderStatus.ACTIVE) Color.GREEN else Color.RED)
-            // todo: handle update status
-//            homeViewModel.updateProviderStatus(1, isActive)
+            vm.updateProviderStatus(vm.providerId, status)
         }
     }
 
