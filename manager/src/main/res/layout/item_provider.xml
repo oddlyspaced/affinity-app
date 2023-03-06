@@ -35,7 +35,7 @@
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:layout_gravity="center"
-                    android:src="@drawable/ic_edit"
+                    android:src="@drawable/ic_toggle_status"
                     app:tint="@android:color/black" />
             </LinearLayout>
         </RelativeLayout>
