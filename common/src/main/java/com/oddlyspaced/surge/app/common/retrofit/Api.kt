@@ -25,6 +25,12 @@ interface Api {
         @Query("id") id: Int
     ): Provider
 
+    @POST("/provider/authenticate")
+    suspend fun authenticateProvider(
+        @Query("id") id: Int,
+        @Query("password") password: String,
+    ): ResponseError
+
     @GET("/provider/services")
     suspend fun fetchServiceTags(): ArrayList<Service>
 
