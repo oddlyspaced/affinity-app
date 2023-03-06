@@ -5,6 +5,10 @@ import android.location.Location
 import android.util.Log
 import android.widget.Toast
 import com.freelapp.libs.locationfetcher.LocationFetcher
+import com.google.android.gms.auth.api.signin.internal.Storage
+import com.oddlyspaced.surge.app.common.AffinityConfiguration.Companion.SHARED_PREFERENCE_NAME
+import com.oddlyspaced.surge.app.common.modal.pref.DataType
+import com.oddlyspaced.surge.app.common.modal.pref.StoragePreference
 import org.osmdroid.api.IGeoPoint
 import org.osmdroid.util.GeoPoint
 
@@ -31,4 +35,28 @@ fun LocationFetcher.Config.applyFrom(config: LocationFetcher.Config) {
     this.providers = config.providers
     this.numUpdates = config.numUpdates
     this.debug = config.debug
+}
+
+/**
+ * util method that saves a preference and then sends a broadcast that the preference is updated
+ * @param preference: the preference to update
+ * @param value: the value to save
+ */
+fun Context.savePreference(preference: StoragePreference, value: Any) {
+    this.getSharedPreferences(SHARED_PREFERENCE_NAME, Context.MODE_PRIVATE).edit().apply {
+        when(preference.dataType) {
+            DataType.BOOLEAN -> putBoolean(preference.name, value as Boolean)
+            DataType.INT -> putInt(preference.name, value as Int)
+            DataType.STRING -> putString(preference.name, value as String)
+        }
+        apply()
+    }
+}
+
+fun Context.readPreference(preference: StoragePreference): Any {
+    return when(preference.dataType) {
+        DataType.BOOLEAN -> this.getSharedPreferences(SHARED_PREFERENCE_NAME, Context.MODE_PRIVATE).getBoolean(preference.name, false)
+        DataType.INT -> this.getSharedPreferences(SHARED_PREFERENCE_NAME, Context.MODE_PRIVATE).getInt(preference.name, 0)
+        DataType.STRING -> this.getSharedPreferences(SHARED_PREFERENCE_NAME, Context.MODE_PRIVATE).getString(preference.name, "") ?: ""
+    }
 }
