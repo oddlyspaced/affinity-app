@@ -15,7 +15,6 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.oddlyspaced.surge.manager.databinding.ActivityCheckBinding
 import com.oddlyspaced.surge.manager.viewmodel.ManagerViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import dagger.hilt.android.lifecycle.HiltViewModel
 
 @AndroidEntryPoint
 class CheckActivity : AppCompatActivity() {

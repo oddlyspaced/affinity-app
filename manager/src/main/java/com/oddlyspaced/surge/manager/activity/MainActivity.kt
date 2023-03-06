@@ -1,7 +1,7 @@
 package com.oddlyspaced.surge.manager.activity
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
 import com.oddlyspaced.surge.manager.R
 import dagger.hilt.android.AndroidEntryPoint
 

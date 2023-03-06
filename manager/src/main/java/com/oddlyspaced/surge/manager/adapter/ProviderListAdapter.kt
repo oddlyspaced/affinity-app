@@ -3,16 +3,12 @@ package com.oddlyspaced.surge.manager.adapter
 import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.navigation.NavController
 import androidx.recyclerview.widget.RecyclerView
 import com.oddlyspaced.surge.app.common.modal.Provider
 import com.oddlyspaced.surge.app.common.modal.ProviderStatus
 import com.oddlyspaced.surge.manager.databinding.ItemProviderBinding
-import com.oddlyspaced.surge.manager.fragment.AddEditFragmentDirections
-import com.oddlyspaced.surge.manager.fragment.HomeFragment
 import com.oddlyspaced.surge.manager.fragment.HomeFragmentDirections
-import java.util.*
 
 class ProviderListAdapter(private val items: List<Provider>, private val navController: NavController) : RecyclerView.Adapter<ProviderListAdapter.ViewHolder>() {
 

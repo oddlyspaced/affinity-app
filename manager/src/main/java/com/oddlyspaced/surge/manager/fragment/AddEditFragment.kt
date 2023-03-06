@@ -9,12 +9,14 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.freelapp.libs.locationfetcher.locationFetcher
 import com.oddlyspaced.surge.app.common.*
-import com.oddlyspaced.surge.app.common.modal.*
+import com.oddlyspaced.surge.app.common.modal.Address
+import com.oddlyspaced.surge.app.common.modal.AreaServed
+import com.oddlyspaced.surge.app.common.modal.PhoneNumber
+import com.oddlyspaced.surge.app.common.modal.Provider
 import com.oddlyspaced.surge.manager.BuildConfig
 import com.oddlyspaced.surge.manager.R
 import com.oddlyspaced.surge.manager.databinding.FragmentAddEditBinding
