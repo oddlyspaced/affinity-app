@@ -23,7 +23,7 @@ import com.oddlyspaced.surge.app.common.modal.asGeoPoint
 import com.oddlyspaced.surge.app.provider.BuildConfig
 import com.oddlyspaced.surge.app.provider.R
 import com.oddlyspaced.surge.app.provider.databinding.FragmentEditBinding
-import com.oddlyspaced.surge.app.provider.viewmodel.HomeViewModel
+import com.oddlyspaced.surge.app.provider.viewmodel.ProviderViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
@@ -45,7 +45,7 @@ class EditFragment: Fragment(R.layout.fragment_edit) {
     private var currentMarker: Marker? = null
     private var currentAddress: Address? = null
 
-    private val homeViewModel: HomeViewModel by activityViewModels()
+    private val homeViewModel: ProviderViewModel by activityViewModels()
 
     private val locationFetcher = locationFetcher("We need your permission to use your location for showing nearby items") {
         fastestInterval = 5.seconds

@@ -16,7 +16,7 @@ import javax.inject.Inject
 
 
 @HiltViewModel
-class HomeViewModel @Inject constructor(private val repo: ProviderRepository, private val locationRepository: LocationRepository): ViewModel() {
+class ProviderViewModel @Inject constructor(private val repo: ProviderRepository, private val locationRepository: LocationRepository): ViewModel() {
     var sourcePointAddress: Address? = null
     var sourcePointWorkingRadius: Double = -1.0
     fun addressFromLocation(location: Location, zoom: Int) = locationRepository.address(location, zoom)
@@ -34,7 +34,8 @@ class HomeViewModel @Inject constructor(private val repo: ProviderRepository, pr
     }
     fun updateProviderStatus(id: Int, status: Boolean) {
         CoroutineScope(Dispatchers.IO).launch {
-            repo.updateProviderStatus(1, status)
+            // todo
+//            repo.updateProviderStatus(1, status)
         }
     }
 }

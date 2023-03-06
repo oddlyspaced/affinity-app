@@ -21,7 +21,7 @@ import com.oddlyspaced.surge.app.common.modal.flip
 import com.oddlyspaced.surge.app.provider.BuildConfig
 import com.oddlyspaced.surge.app.provider.R
 import com.oddlyspaced.surge.app.provider.databinding.FragmentHomeBinding
-import com.oddlyspaced.surge.app.provider.viewmodel.HomeViewModel
+import com.oddlyspaced.surge.app.provider.viewmodel.ProviderViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -44,7 +44,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
     private lateinit var binding: FragmentHomeBinding
 
-    private val homeViewModel: HomeViewModel by activityViewModels()
+    private val homeViewModel: ProviderViewModel by activityViewModels()
     private var status = ProviderStatus.UNDEFINED
 
     private val locationFetcher = locationFetcher("We need your permission to use your location for showing nearby items") {
