@@ -1,9 +1,6 @@
 package com.oddlyspaced.surge.app.common.retrofit
 
-import com.oddlyspaced.surge.app.common.modal.Provider
-import com.oddlyspaced.surge.app.common.modal.ProviderStatus
-import com.oddlyspaced.surge.app.common.modal.ResponseError
-import com.oddlyspaced.surge.app.common.modal.Service
+import com.oddlyspaced.surge.app.common.modal.*
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
@@ -53,9 +50,6 @@ interface Api {
         @Query("radius") radius: Double,
     )
 
-    @POST("/provider/statusupdate")
-    suspend fun updateProviderStatus(
-        @Query("id") id: Int,
-        @Query("isActive") status: Boolean,
-    )
+    @POST("/provider/update/status")
+    suspend fun updateProviderStatus(@Body status: StatusUpdateParameter)
 }
