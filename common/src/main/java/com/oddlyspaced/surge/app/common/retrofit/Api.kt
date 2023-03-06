@@ -11,6 +11,9 @@ import retrofit2.http.Query
 
 interface Api {
 
+    @GET("/ping")
+    suspend fun ping(): ResponseError
+
     @POST("/provider/add")
     suspend fun addProvider(@Body provider: Provider): ResponseError
 
