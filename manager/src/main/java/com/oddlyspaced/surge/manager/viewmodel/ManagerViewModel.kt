@@ -22,10 +22,10 @@ class ManagerViewModel @Inject constructor(private val repo: ProviderRepository,
 
     fun addressFromLocation(location: Location, zoom: Int) = locationRepository.address(location, zoom)
 
-    fun addProvider(name: String, phone: PhoneNumber, location: Location, services: ArrayList<String>, areaServed: AreaServed): LiveData<ResponseError> {
+    fun addProvider(name: String, phone: PhoneNumber, location: Location, services: ArrayList<String>, areaServed: AreaServed, id: Int = -1): LiveData<ResponseError> {
         val data = MutableLiveData<ResponseError>()
         CoroutineScope(Dispatchers.IO).launch {
-            data.postValue(repo.addProvider(name, phone, location, services, areaServed))
+            data.postValue(repo.addProvider(id, name, phone, location, services, areaServed))
         }
         return data
     }
