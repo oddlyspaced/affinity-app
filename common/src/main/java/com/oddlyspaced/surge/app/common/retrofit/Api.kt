@@ -51,5 +51,5 @@ interface Api {
     )
 
     @POST("/provider/update/status")
-    suspend fun updateProviderStatus(@Body status: StatusUpdateParameter)
+    suspend fun updateProviderStatus(@Body status: StatusUpdateParameter): ResponseError
 }
