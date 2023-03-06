@@ -59,4 +59,18 @@ class ProviderViewModel @Inject constructor(private val repo: ProviderRepository
         }
         return data
     }
+
+    fun authenticate(id: Int, password: String): LiveData<ResponseError> {
+        val data = MutableLiveData<ResponseError>()
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                data.postValue(repo.authenticateProvider(id, password))
+            }
+            catch (e: Exception) {
+                e.printStackTrace()
+                data.postValue(ResponseError("Unable to login", error = true))
+            }
+        }
+        return data
+    }
 }
