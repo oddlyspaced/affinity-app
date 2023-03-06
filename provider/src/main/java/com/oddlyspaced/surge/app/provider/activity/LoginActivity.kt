@@ -14,6 +14,8 @@ import androidx.activity.viewModels
 import androidx.core.view.isVisible
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.oddlyspaced.surge.app.common.databinding.ActivityCheckBinding
+import com.oddlyspaced.surge.app.common.modal.pref.StoragePreference
+import com.oddlyspaced.surge.app.common.savePreference
 import com.oddlyspaced.surge.app.provider.R
 import com.oddlyspaced.surge.app.provider.databinding.ActivityLoginBinding
 import com.oddlyspaced.surge.app.provider.viewmodel.ProviderViewModel
@@ -134,6 +136,7 @@ class LoginActivity : AppCompatActivity() {
                 Toast.makeText(applicationContext, "Unable to login", Toast.LENGTH_SHORT).show()
             }
             else {
+                applicationContext.savePreference(StoragePreference.PREF_USER_ID, id.toInt())
                 startActivity(Intent(this, MainActivity::class.java))
             }
         }
