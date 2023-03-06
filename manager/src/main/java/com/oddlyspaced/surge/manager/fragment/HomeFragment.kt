@@ -31,7 +31,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     }
 
     private fun fetchProviders() {
-        vm.providers.observe(requireActivity()) { providers ->
+        vm.fetchProviders(vm.providers.isEmpty()).observe(requireActivity()) { providers ->
             displayProviders(providers)
         }
     }
@@ -98,6 +98,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     }
 
     private fun init() {
+        fetchProviders()
         binding.btnHomeFetch.setOnClickListener {
             fetchProviders()
         }
