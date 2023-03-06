@@ -12,7 +12,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.oddlyspaced.surge.app.common.databinding.ActivityCheckBinding
+import com.oddlyspaced.surge.manager.databinding.ActivityCheckBinding
 import com.oddlyspaced.surge.manager.viewmodel.ManagerViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.lifecycle.HiltViewModel
