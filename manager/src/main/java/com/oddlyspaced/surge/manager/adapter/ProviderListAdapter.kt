@@ -10,7 +10,7 @@ import com.oddlyspaced.surge.app.common.modal.ProviderStatus
 import com.oddlyspaced.surge.manager.databinding.ItemProviderBinding
 import com.oddlyspaced.surge.manager.fragment.HomeFragmentDirections
 
-class ProviderListAdapter(private val items: List<Provider>, private val navController: NavController) : RecyclerView.Adapter<ProviderListAdapter.ViewHolder>() {
+class ProviderListAdapter(val items: ArrayList<Provider>, private val navController: NavController) : RecyclerView.Adapter<ProviderListAdapter.ViewHolder>() {
 
     inner class ViewHolder(private val binding: ItemProviderBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(data: Provider) {
