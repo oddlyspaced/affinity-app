@@ -54,16 +54,21 @@ class ManagerViewModel @Inject constructor(private val repo: ProviderRepository,
         return data
     }
 
-    private val _providers = MutableLiveData<List<Provider>>()
-    val providers: LiveData<List<Provider>>
-        get() {
-            // need to refresh
-            Logger.d("Fetching Providers!")
+    val providers = arrayListOf<Provider>()
+    fun fetchProviders(fetch: Boolean = false): LiveData<List<Provider>> {
+        val data = MutableLiveData<List<Provider>>()
+        if (fetch) {
             CoroutineScope(Dispatchers.IO).launch {
-                _providers.postValue(repo.providersUnfiltered())
+                providers.clear()
+                providers.addAll(repo.providersUnfiltered())
+                data.postValue(providers)
             }
-            return _providers
         }
+        else {
+            data.postValue(providers)
+        }
+        return data
+    }
 
     fun ping(): LiveData<ResponseError> {
         val data = MutableLiveData<ResponseError>()
