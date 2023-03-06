@@ -30,6 +30,14 @@ class ManagerViewModel @Inject constructor(private val repo: ProviderRepository,
         return data
     }
 
+    fun deleteProvider(id: Int): LiveData<ResponseError> {
+        val data = MutableLiveData<ResponseError>()
+        CoroutineScope(Dispatchers.IO).launch {
+            data.postValue(repo.deleteProvider(id))
+        }
+        return data
+    }
+
     fun fetchProvider(id: Int): LiveData<Provider> {
         val data = MutableLiveData<Provider>()
         CoroutineScope(Dispatchers.IO).launch {
