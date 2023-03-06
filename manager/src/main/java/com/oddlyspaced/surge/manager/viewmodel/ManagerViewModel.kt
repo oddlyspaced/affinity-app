@@ -46,6 +46,14 @@ class ManagerViewModel @Inject constructor(private val repo: ProviderRepository,
         return data
     }
 
+    fun updateProviderStatus(id: Int, status: ProviderStatus): LiveData<ResponseError> {
+        val data = MutableLiveData<ResponseError>()
+        CoroutineScope(Dispatchers.IO).launch {
+            data.postValue(repo.updateProviderStatus(id, status))
+        }
+        return data
+    }
+
     private val _providers = MutableLiveData<List<Provider>>()
     val providers: LiveData<List<Provider>>
         get() {
