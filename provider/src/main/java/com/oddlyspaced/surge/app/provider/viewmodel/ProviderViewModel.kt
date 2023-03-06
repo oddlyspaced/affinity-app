@@ -4,10 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.oddlyspaced.surge.app.common.Logger
-import com.oddlyspaced.surge.app.common.modal.Address
-import com.oddlyspaced.surge.app.common.modal.Location
-import com.oddlyspaced.surge.app.common.modal.Provider
-import com.oddlyspaced.surge.app.common.modal.ResponseError
+import com.oddlyspaced.surge.app.common.modal.*
 import com.oddlyspaced.surge.app.common.repository.GeneralRepository
 import com.oddlyspaced.surge.app.common.repository.LocationRepository
 import com.oddlyspaced.surge.app.common.repository.ProviderRepository
@@ -20,30 +17,35 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ProviderViewModel @Inject constructor(private val repo: ProviderRepository, private val locationRepository: LocationRepository, private val generalRepository: GeneralRepository): ViewModel() {
+
+    var providerId: Int = -1
+
     var sourcePointAddress: Address? = null
     var sourcePointWorkingRadius: Double = -1.0
 
     fun addressFromLocation(location: Location, zoom: Int) = locationRepository.address(location, zoom)
 
-    fun getProviderInfo(id: Int): LiveData<Provider> {
-        val _provider = MutableLiveData<Provider>()
+    fun fetchProvider(id: Int): LiveData<Provider> {
+        val data = MutableLiveData<Provider>()
         CoroutineScope(Dispatchers.IO).launch {
-            _provider.postValue(repo.provider(id))
+            data.postValue(repo.provider(id))
         }
-        return _provider
+        return data
     }
 
-    fun updateProviderSourceArea(id: Int, sourcePoint: Location, radius: Double) {
-        CoroutineScope(Dispatchers.IO).launch {
-            repo.saveProviderSource(1, sourcePoint, radius)
-        }
-    }
+    // todo update
+//    fun updateProviderSourceArea(id: Int, sourcePoint: Location, ) {
+//        CoroutineScope(Dispatchers.IO).launch {
+//            repo.saveProviderSource(1, sourcePoint, radius)
+//        }
+//    }
 
-    fun updateProviderStatus(id: Int, status: Boolean) {
+    fun updateProviderStatus(id: Int, status: ProviderStatus): LiveData<ResponseError> {
+        val data = MutableLiveData<ResponseError>()
         CoroutineScope(Dispatchers.IO).launch {
-            // todo
-//            repo.updateProviderStatus(1, status)
+            data.postValue(repo.updateProviderStatus(id, status))
         }
+        return data
     }
 
     fun ping(): LiveData<ResponseError> {
