@@ -48,6 +48,14 @@ class ProviderViewModel @Inject constructor(private val repo: ProviderRepository
         return data
     }
 
+    fun updateProviderLocation(id: Int, location: Location): LiveData<ResponseError> {
+        val data = MutableLiveData<ResponseError>()
+        CoroutineScope(Dispatchers.IO).launch {
+            data.postValue(repo.updateProviderLocation(id, location))
+        }
+        return data
+    }
+
     fun ping(): LiveData<ResponseError> {
         val data = MutableLiveData<ResponseError>()
         CoroutineScope(Dispatchers.IO).launch {
