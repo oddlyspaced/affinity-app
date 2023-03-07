@@ -18,6 +18,7 @@ import com.oddlyspaced.surge.app.common.Logger
 import com.oddlyspaced.surge.app.common.asGeoPoint
 import com.oddlyspaced.surge.app.common.asLocation
 import com.oddlyspaced.surge.app.common.modal.Address
+import com.oddlyspaced.surge.app.common.modal.AreaServed
 import com.oddlyspaced.surge.app.common.modal.Location
 import com.oddlyspaced.surge.app.common.modal.asGeoPoint
 import com.oddlyspaced.surge.app.provider.BuildConfig
@@ -100,11 +101,14 @@ class EditFragment: Fragment(R.layout.fragment_edit) {
         binding.cardEditSave.setOnClickListener {
             homeViewModel.sourcePointAddress = currentAddress
             homeViewModel.sourcePointWorkingRadius = binding.sliderEditDistance.value.toDouble()
-            // post this to server here
-            homeViewModel.updateProviderSourceArea(1, homeViewModel.sourcePointAddress!!.location,
-                homeViewModel.sourcePointWorkingRadius
-            )
-            findNavController().popBackStack()
+            homeViewModel.updateProviderAreaServed(homeViewModel.providerId, AreaServed(homeViewModel.sourcePointAddress!!.location, homeViewModel.sourcePointWorkingRadius)).observe(requireActivity()) {
+                if (it.error) {
+                    Toast.makeText(requireContext(), "Error occurred while trying to update served area", Toast.LENGTH_SHORT).show()
+                }
+                else {
+                    findNavController().popBackStack()
+                }
+            }
         }
 
     }
