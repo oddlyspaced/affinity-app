@@ -45,16 +45,7 @@ interface Api {
     ): ArrayList<Provider>
 
     @POST("/provider/update/location")
-    suspend fun updateProviderLocation(
-
-    )
-
-    suspend fun updateProviderArea(
-        @Query("id") id: Int,
-        @Query("sourceLat") lat: Double,
-        @Query("sourceLon") lon: Double,
-        @Query("radius") radius: Double,
-    )
+    suspend fun updateProviderLocation(@Body location: LocationUpdateParameter): ResponseError
 
     @POST("/provider/update/status")
     suspend fun updateProviderStatus(@Body status: StatusUpdateParameter): ResponseError
