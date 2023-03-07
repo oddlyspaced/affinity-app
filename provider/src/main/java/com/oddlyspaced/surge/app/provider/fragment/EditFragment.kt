@@ -46,7 +46,7 @@ class EditFragment: Fragment(R.layout.fragment_edit) {
     private var currentMarker: Marker? = null
     private var currentAddress: Address? = null
 
-    private val homeViewModel: ProviderViewModel by activityViewModels()
+    private val vm: ProviderViewModel by activityViewModels()
 
     private val locationFetcher = locationFetcher("We need your permission to use your location for showing nearby items") {
         fastestInterval = 5.seconds
@@ -99,9 +99,9 @@ class EditFragment: Fragment(R.layout.fragment_edit) {
             }
         })
         binding.cardEditSave.setOnClickListener {
-            homeViewModel.sourcePointAddress = currentAddress
-            homeViewModel.sourcePointWorkingRadius = binding.sliderEditDistance.value.toDouble()
-            homeViewModel.updateProviderAreaServed(homeViewModel.providerId, AreaServed(homeViewModel.sourcePointAddress!!.location, homeViewModel.sourcePointWorkingRadius)).observe(requireActivity()) {
+            vm.sourcePointAddress = currentAddress
+            vm.sourcePointWorkingRadius = binding.sliderEditDistance.value.toDouble()
+            vm.updateProviderAreaServed(vm.providerId, AreaServed(vm.sourcePointAddress!!.location, vm.sourcePointWorkingRadius)).observe(requireActivity()) {
                 if (it.error) {
                     Toast.makeText(requireContext(), "Error occurred while trying to update served area", Toast.LENGTH_SHORT).show()
                 }
@@ -192,7 +192,7 @@ class EditFragment: Fragment(R.layout.fragment_edit) {
 
     private fun setAddressForLocation(location: Location) {
         binding.selectEditLocation.txSelectLocation.text = "Loading..."
-        homeViewModel.addressFromLocation(location, binding.map.zoomLevelDouble.toInt()).observe(requireActivity()) { result ->
+        vm.addressFromLocation(location, binding.map.zoomLevelDouble.toInt()).observe(requireActivity()) { result ->
             binding.selectEditLocation.txSelectLocation.text = result.displayName + "\n" + "lat: ${location.lat}, lon: ${location.lon}"
             currentAddress = Address(location, result.displayName ?: "${location.lat}, ${location.lon}")
         }
