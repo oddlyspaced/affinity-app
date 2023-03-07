@@ -34,7 +34,7 @@ interface Api {
     @GET("/provider/services")
     suspend fun fetchServiceTags(): ArrayList<Service>
 
-    @POST("/provider/search")
+    @GET("/provider/search")
     suspend fun searchProviders(
         @Query("limitCount") limitCount: Int,
         @Query("limitDistance") limitDistance: Int,
