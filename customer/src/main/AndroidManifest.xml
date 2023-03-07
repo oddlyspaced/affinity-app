@@ -19,7 +19,7 @@
         android:theme="@style/Theme.Affinity"
         tools:targetApi="31">
         <activity
-            android:name="com.oddlyspaced.surge.app.customer.MainActivity"
+            android:name="com.oddlyspaced.surge.app.customer.activity.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

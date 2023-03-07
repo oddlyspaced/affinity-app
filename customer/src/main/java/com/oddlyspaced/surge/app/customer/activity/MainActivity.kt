@@ -1,7 +1,8 @@
-package com.oddlyspaced.surge.app.customer
+package com.oddlyspaced.surge.app.customer.activity
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import com.oddlyspaced.surge.app.customer.R
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
