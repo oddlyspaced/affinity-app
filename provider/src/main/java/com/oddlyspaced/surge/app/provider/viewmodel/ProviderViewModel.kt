@@ -33,13 +33,6 @@ class ProviderViewModel @Inject constructor(private val repo: ProviderRepository
         return data
     }
 
-    // todo update
-//    fun updateProviderSourceArea(id: Int, sourcePoint: Location, ) {
-//        CoroutineScope(Dispatchers.IO).launch {
-//            repo.saveProviderSource(1, sourcePoint, radius)
-//        }
-//    }
-
     fun updateProviderStatus(id: Int, status: ProviderStatus): LiveData<ResponseError> {
         val data = MutableLiveData<ResponseError>()
         CoroutineScope(Dispatchers.IO).launch {
@@ -52,6 +45,14 @@ class ProviderViewModel @Inject constructor(private val repo: ProviderRepository
         val data = MutableLiveData<ResponseError>()
         CoroutineScope(Dispatchers.IO).launch {
             data.postValue(repo.updateProviderLocation(id, location))
+        }
+        return data
+    }
+
+    fun updateProviderAreaServed(id: Int, areaServed: AreaServed): LiveData<ResponseError> {
+        val data = MutableLiveData<ResponseError>()
+        CoroutineScope(Dispatchers.IO).launch {
+            data.postValue(repo.updateProviderServedArea(id, areaServed))
         }
         return data
     }
