@@ -138,6 +138,7 @@ class LoginActivity : AppCompatActivity() {
             else {
                 applicationContext.savePreference(StoragePreference.PREF_USER_ID, id.toInt())
                 startActivity(Intent(this, MainActivity::class.java))
+                finish()
             }
         }
     }

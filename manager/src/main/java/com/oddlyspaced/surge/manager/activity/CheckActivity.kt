@@ -83,6 +83,7 @@ class CheckActivity : AppCompatActivity() {
         vm.ping().observe(this) {
             if (!it.error) {
                 startActivity(Intent(applicationContext, MainActivity::class.java))
+                finish()
             }
             else {
                 showServerUnavailablePrompt()
