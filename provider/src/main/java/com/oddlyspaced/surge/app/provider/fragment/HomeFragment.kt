@@ -125,6 +125,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                         requireActivity().runOnUiThread {
                             markCurrentLocation()
                         }
+                        vm.updateProviderLocation(vm.providerId, location.asGeoPoint().asLocation())
                     })
                 }
             }
