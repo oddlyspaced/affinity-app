@@ -47,6 +47,9 @@ interface Api {
     @POST("/provider/update/location")
     suspend fun updateProviderLocation(@Body location: LocationUpdateParameter): ResponseError
 
+    @POST("/provider/update/area")
+    suspend fun updateProviderServedArea(@Body area: AreaUpdateParameter): ResponseError
+
     @POST("/provider/update/status")
     suspend fun updateProviderStatus(@Body status: StatusUpdateParameter): ResponseError
 }
