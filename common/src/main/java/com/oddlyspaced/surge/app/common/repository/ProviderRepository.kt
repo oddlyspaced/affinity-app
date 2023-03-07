@@ -31,5 +31,6 @@ class ProviderRepository @Inject constructor(private val api: Api) {
     suspend fun provider(id: Int) = api.getProvider(id)
     suspend fun updateProviderStatus(id: Int, status: ProviderStatus) = api.updateProviderStatus(StatusUpdateParameter(id, status))
     suspend fun updateProviderLocation(id: Int, location: Location) = api.updateProviderLocation(LocationUpdateParameter(id, location))
+    suspend fun updateProviderServedArea(id: Int, areaServed: AreaServed) = api.updateProviderServedArea(AreaUpdateParameter(id, areaServed))
     suspend fun authenticateProvider(id: Int, password: String) = api.authenticateProvider(id, password)
 }
