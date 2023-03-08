@@ -76,7 +76,7 @@ class SearchFragment: Fragment(R.layout.fragment_search) {
             text = "Loading..."
         })
 
-        vm.services.observe(requireActivity()) { services ->
+        vm.fetchServices().observe(requireActivity()) { services ->
             binding.chipgroupSearchService.removeAllViews()
             services.forEach { service ->
                 binding.chipgroupSearchService.addView(Chip(requireContext()).apply {
