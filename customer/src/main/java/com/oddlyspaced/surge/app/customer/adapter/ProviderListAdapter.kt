@@ -14,7 +14,7 @@ import com.oddlyspaced.surge.app.customer.databinding.ItemProviderDetailBinding
 import kotlin.math.roundToInt
 
 
-class ProviderListAdapter(private val data: ArrayList<Provider>, private val basePoint: Location?): RecyclerView.Adapter<ProviderListAdapter.ViewHolder>() {
+class ProviderListAdapter(private val data: List<Provider>, private val basePoint: Location?): RecyclerView.Adapter<ProviderListAdapter.ViewHolder>() {
     inner class ViewHolder(private val item: ItemProviderDetailBinding): RecyclerView.ViewHolder(item.root) {
         fun bind(param: Provider) {
             item.txProviderInfoName.text = param.name
