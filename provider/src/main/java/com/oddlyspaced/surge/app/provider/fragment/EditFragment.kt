@@ -13,10 +13,7 @@ import com.freelapp.libs.locationfetcher.LocationFetcher
 import com.freelapp.libs.locationfetcher.locationFetcher
 import com.google.android.gms.location.LocationRequest
 import com.google.android.material.slider.Slider
-import com.oddlyspaced.surge.app.common.AffinityConfiguration
-import com.oddlyspaced.surge.app.common.Logger
-import com.oddlyspaced.surge.app.common.asGeoPoint
-import com.oddlyspaced.surge.app.common.asLocation
+import com.oddlyspaced.surge.app.common.*
 import com.oddlyspaced.surge.app.common.modal.Address
 import com.oddlyspaced.surge.app.common.modal.AreaServed
 import com.oddlyspaced.surge.app.common.modal.Location
@@ -91,7 +88,7 @@ class EditFragment: Fragment(R.layout.fragment_edit) {
 
             override fun onStopTrackingTouch(slider: Slider) {
                 if (currentAddress == null) {
-                    Toast.makeText(requireContext(), "Please select a source point by tapping on map first!", Toast.LENGTH_SHORT).show()
+                    toast("Please select a source point by tapping on map first!")
                 }
                 else {
                     createCircleAroundPoint(currentAddress!!.location.asGeoPoint(), slider.value.toDouble())
@@ -103,7 +100,7 @@ class EditFragment: Fragment(R.layout.fragment_edit) {
             vm.sourcePointWorkingRadius = binding.sliderEditDistance.value.toDouble()
             vm.updateProviderAreaServed(vm.providerId, AreaServed(vm.sourcePointAddress!!.location, vm.sourcePointWorkingRadius)).observe(requireActivity()) {
                 if (it.error) {
-                    Toast.makeText(requireContext(), "Error occurred while trying to update served area", Toast.LENGTH_SHORT).show()
+                    toast("Error occurred while trying to update served area")
                 }
                 else {
                     findNavController().popBackStack()
@@ -153,7 +150,7 @@ class EditFragment: Fragment(R.layout.fragment_edit) {
     private suspend fun markCurrentLocation() {
         locationFetcher.location.collectLatest {
             it.fold({ error ->
-                Toast.makeText(requireContext(), "Error occurred while fetching location.", Toast.LENGTH_SHORT).show()
+                toast("Error occurred while fetching location.")
                 Logger.d("ERROR: $error")
             }, { location ->
                 val userPoint = location.asGeoPoint()

@@ -10,10 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.freelapp.libs.locationfetcher.locationFetcher
-import com.oddlyspaced.surge.app.common.AffinityConfiguration
-import com.oddlyspaced.surge.app.common.Logger
-import com.oddlyspaced.surge.app.common.applyFrom
-import com.oddlyspaced.surge.app.common.asGeoPoint
+import com.oddlyspaced.surge.app.common.*
 import com.oddlyspaced.surge.app.common.modal.Provider
 import com.oddlyspaced.surge.app.common.modal.Providers
 import com.oddlyspaced.surge.app.common.modal.asGeoPoint
@@ -77,7 +74,7 @@ class HomeFragment: Fragment(R.layout.fragment_home) {
     private suspend fun markCurrentLocation() {
         locationFetcher.location.collectLatest {
             it.fold({ error ->
-                Toast.makeText(requireContext(), "Error occurred while fetching location.", Toast.LENGTH_SHORT).show()
+                toast("Error occurred while fetching location")
                 Logger.d("ERROR: $error")
             }, { location ->
                 val userPoint = location.asGeoPoint()

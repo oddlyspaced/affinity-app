@@ -20,6 +20,7 @@ import com.oddlyspaced.surge.app.common.asGeoPoint
 import com.oddlyspaced.surge.app.common.modal.Address
 import com.oddlyspaced.surge.app.common.modal.Location
 import com.oddlyspaced.surge.app.common.modal.asGeoPoint
+import com.oddlyspaced.surge.app.common.toast
 import com.oddlyspaced.surge.manager.BuildConfig
 import com.oddlyspaced.surge.manager.R
 import com.oddlyspaced.surge.manager.databinding.FragmentEditSourceLocationBinding
@@ -88,7 +89,7 @@ class EditSourceLocationFragment: Fragment(R.layout.fragment_edit_source_locatio
 
             override fun onStopTrackingTouch(slider: Slider) {
                 if (currentAddress == null) {
-                    Toast.makeText(requireContext(), "Please select a source point by tapping on map first!", Toast.LENGTH_SHORT).show()
+                    toast("Please select a source point by tapping on map first!")
                 }
                 else {
                     createCircleAroundPoint(currentAddress!!.location.asGeoPoint(), slider.value.toDouble())
@@ -165,7 +166,7 @@ class EditSourceLocationFragment: Fragment(R.layout.fragment_edit_source_locatio
     private suspend fun markCurrentLocation() {
         locationFetcher.location.collectLatest {
             it.fold({ error ->
-                Toast.makeText(requireContext(), "Error occurred while fetching location.", Toast.LENGTH_SHORT).show()
+                toast("Error occurred while fetching location")
                 Logger.d("ERROR: $error")
             }, { location ->
                 val userPoint = location.asGeoPoint()

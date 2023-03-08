@@ -105,36 +105,36 @@ class AddEditFragment: Fragment(R.layout.fragment_add_edit) {
     private fun handleSave() {
         binding.etAddEditName.text.let { name ->
             if (name.isEmpty()) {
-                Toast.makeText(requireContext(), "Please enter a name", Toast.LENGTH_SHORT).show()
+                toast("Please enter a name")
                 return
             }
         }
         binding.etAddEditCode.text.let { code ->
             if (code.isEmpty()) {
-                Toast.makeText(requireContext(), "Please enter a phone number code", Toast.LENGTH_SHORT).show()
+                toast("Please enter a phone number code")
                 return
             }
         }
         binding.etAddEditPhone.text.let { phone ->
             if (phone.isEmpty()) {
-                Toast.makeText(requireContext(), "Please enter a phone number", Toast.LENGTH_SHORT).show()
+                toast("Please enter a phone number")
                 return
             }
         }
         binding.etAddEditServices.text.let { services ->
             if (services.isEmpty()) {
-                Toast.makeText(requireContext(), "Please enter services list", Toast.LENGTH_SHORT).show()
+                toast("Please enter services list")
                 return
             }
 //            if (services.split(",").toTypedArray())
         }
         vm.sourcePointAddress?.let {} ?: run {
-            Toast.makeText(requireContext(), "Please select area to be served", Toast.LENGTH_SHORT).show()
+            toast("Please select area to be served")
             return
         }
 
         if (isAddingProvider) {
-            Toast.makeText(requireContext(), "Please wait for previous call to finish", Toast.LENGTH_SHORT).show()
+            toast("Please wait for previous call to finish")
             return
         }
 
@@ -158,7 +158,7 @@ class AddEditFragment: Fragment(R.layout.fragment_add_edit) {
             isAddingProvider = false
             binding.layoutAddSaving.isVisible = false
             if (response.error) {
-                Toast.makeText(requireContext(), "An error occured while trying to save provider!", Toast.LENGTH_SHORT).show()
+                toast("An error occured while trying to save provider!")
             }
             else {
                 vm.providers.filter { provider ->
@@ -169,11 +169,7 @@ class AddEditFragment: Fragment(R.layout.fragment_add_edit) {
                         vm.providers.clear()
                     } else {
                         // old provider, just update details
-                        Toast.makeText(
-                            requireContext(),
-                            "Provider updated successfully",
-                            Toast.LENGTH_SHORT
-                        ).show()
+                        toast("Provider updated successfully")
                         vm.providers[vm.providers.indexOf(filteredProviders[0])] = Provider(
                             id = args.providerId,
                             name = binding.etAddEditName.text.toString(),
@@ -208,7 +204,7 @@ class AddEditFragment: Fragment(R.layout.fragment_add_edit) {
             item.setMarker(ContextCompat.getDrawable(requireContext(), com.oddlyspaced.surge.app.common.R.drawable.ic_location))
             markers.add(item)
             items = ItemizedIconOverlay(requireActivity(), markers, null)
-            Toast.makeText(requireContext(), "Marking selected location", Toast.LENGTH_SHORT).show()
+            toast("Marking selected location")
             requireActivity().runOnUiThread {
                 binding.map.controller.setZoom(AffinityConfiguration.DEFAULT_MAP_ZOOM)
                 binding.map.controller.setCenter(GeoPoint(location.lat, location.lon))

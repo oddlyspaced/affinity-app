@@ -16,6 +16,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.oddlyspaced.surge.app.common.databinding.ActivityCheckBinding
 import com.oddlyspaced.surge.app.common.modal.pref.StoragePreference
 import com.oddlyspaced.surge.app.common.savePreference
+import com.oddlyspaced.surge.app.common.toast
 import com.oddlyspaced.surge.app.provider.R
 import com.oddlyspaced.surge.app.provider.databinding.ActivityLoginBinding
 import com.oddlyspaced.surge.app.provider.viewmodel.ProviderViewModel
@@ -116,16 +117,16 @@ class LoginActivity : AppCompatActivity() {
         val pass = binding.etLoginPass.text.toString()
 
         if (id.isEmpty()) {
-            Toast.makeText(applicationContext, "Enter ID!", Toast.LENGTH_SHORT).show()
+            toast("Enter ID!")
             return
         }
         if (pass.isEmpty()) {
-            Toast.makeText(applicationContext, "Enter Password!", Toast.LENGTH_SHORT).show()
+            toast("Enter Password!")
             return
         }
         // using this in place of isLoggingIn
         if (binding.pbLoginLoading.isVisible) {
-            Toast.makeText(applicationContext, "Please wait!", Toast.LENGTH_SHORT).show()
+            toast("Please wait!")
             return
         }
 
@@ -133,7 +134,7 @@ class LoginActivity : AppCompatActivity() {
         vm.authenticate(id.toInt(), pass).observe(this) {
             binding.pbLoginLoading.isVisible = false
             if (it.error) {
-                Toast.makeText(applicationContext, "Unable to login", Toast.LENGTH_SHORT).show()
+                toast("Unable to login")
             }
             else {
                 applicationContext.savePreference(StoragePreference.PREF_USER_ID, id.toInt())

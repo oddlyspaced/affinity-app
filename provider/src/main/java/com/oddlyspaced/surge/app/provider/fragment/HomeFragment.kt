@@ -137,7 +137,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         if (!isVisible)
             return
         if (!this@HomeFragment::currentLocation.isInitialized) {
-            Toast.makeText(requireContext(), "Current location unavailable", Toast.LENGTH_SHORT).show()
+            toast("Current location unavailable")
             return
         }
         val userPoint = currentLocation.asGeoPoint()

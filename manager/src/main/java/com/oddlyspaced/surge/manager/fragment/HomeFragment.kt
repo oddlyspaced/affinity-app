@@ -10,6 +10,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.oddlyspaced.surge.app.common.modal.Provider
 import com.oddlyspaced.surge.app.common.modal.flip
+import com.oddlyspaced.surge.app.common.toast
 import com.oddlyspaced.surge.manager.R
 import com.oddlyspaced.surge.manager.adapter.ProviderListAdapter
 import com.oddlyspaced.surge.manager.adapter.swipe.RecyclerTouchListener
@@ -69,7 +70,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                             val provider = adapter.items[position]
                             vm.deleteProvider(provider.id).observe(requireActivity()) {
                                 if (it.error) {
-                                    Toast.makeText(requireContext(), "An error occurred while trying to remove provider!", Toast.LENGTH_SHORT).show()
+                                    toast("An error occurred while trying to remove provider!")
                                 }
                                 else {
                                     adapter.items.removeAt(position)
@@ -82,7 +83,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                             val provider = adapter.items[position]
                             vm.updateProviderStatus(provider.id, provider.status.flip()).observe(requireActivity()) {
                                 if (it.error) {
-                                    Toast.makeText(requireContext(), "An error occurred while trying to update status!", Toast.LENGTH_SHORT).show()
+                                    toast("An error occurred while trying to update status!")
                                 }
                                 else {
                                     provider.status = provider.status.flip()

@@ -83,7 +83,7 @@ class PickLocationFragment : Fragment(R.layout.fragment_pick_location) {
         locationFetcher.location.collectLatest {
             it.fold({ error ->
                 requireActivity().runOnUiThread {
-                    Toast.makeText(requireContext(), "Error occurred while fetching location.", Toast.LENGTH_SHORT).show()
+                    toast("Error occurred while fetching location.")
                 }
                 Logger.d("ERROR: $error")
             }, { location ->
