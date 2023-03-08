@@ -12,7 +12,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.oddlyspaced.surge.app.common.databinding.ActivityCheckBinding
-import com.oddlyspaced.surge.app.customer.viewmodel.HomeViewModel
+import com.oddlyspaced.surge.app.customer.viewmodel.CustomerViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -20,7 +20,7 @@ class CheckActivity : AppCompatActivity() {
 
     private val binding by lazy { ActivityCheckBinding.inflate(layoutInflater) }
     private lateinit var requestPermissionLauncher: ActivityResultLauncher<String>
-    private val vm: HomeViewModel by viewModels()
+    private val vm: CustomerViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

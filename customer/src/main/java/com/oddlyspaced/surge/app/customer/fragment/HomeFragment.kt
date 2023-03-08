@@ -20,7 +20,7 @@ import com.oddlyspaced.surge.app.common.modal.asGeoPoint
 import com.oddlyspaced.surge.app.customer.BuildConfig
 import com.oddlyspaced.surge.app.customer.R
 import com.oddlyspaced.surge.app.customer.databinding.FragmentHomeBinding
-import com.oddlyspaced.surge.app.customer.viewmodel.HomeViewModel
+import com.oddlyspaced.surge.app.customer.viewmodel.CustomerViewModel
 import com.oddlyspaced.surge.app.customer.viewmodel.LocationType
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
@@ -36,7 +36,7 @@ import org.osmdroid.views.overlay.Marker
 class HomeFragment: Fragment(R.layout.fragment_home) {
 
     private lateinit var binding: FragmentHomeBinding
-    private val vm: HomeViewModel by activityViewModels()
+    private val vm: CustomerViewModel by activityViewModels()
 
     private lateinit var userLocationMarker: Marker
 

@@ -19,7 +19,7 @@ import com.oddlyspaced.surge.app.common.modal.SearchParameter
 import com.oddlyspaced.surge.app.common.modal.asGeoPoint
 import com.oddlyspaced.surge.app.customer.R
 import com.oddlyspaced.surge.app.customer.databinding.FragmentSearchBinding
-import com.oddlyspaced.surge.app.customer.viewmodel.HomeViewModel
+import com.oddlyspaced.surge.app.customer.viewmodel.CustomerViewModel
 import com.oddlyspaced.surge.app.customer.viewmodel.LocationType
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -35,7 +35,7 @@ import org.osmdroid.views.overlay.Polygon
 class SearchFragment: Fragment(R.layout.fragment_search) {
 
     private lateinit var binding: FragmentSearchBinding
-    private val vm: HomeViewModel by activityViewModels()
+    private val vm: CustomerViewModel by activityViewModels()
     private val markers = hashMapOf<Int, Marker>()
     private val locationFetcher = locationFetcher("We need permission to fetch location") {
         this.applyFrom(AffinityConfiguration.locationFetcherGlobalConfig)

@@ -18,7 +18,7 @@ import com.oddlyspaced.surge.app.common.modal.Provider
 import com.oddlyspaced.surge.app.common.modal.asGeoPoint
 import com.oddlyspaced.surge.app.customer.R
 import com.oddlyspaced.surge.app.customer.databinding.FragmentPickLocationBinding
-import com.oddlyspaced.surge.app.customer.viewmodel.HomeViewModel
+import com.oddlyspaced.surge.app.customer.viewmodel.CustomerViewModel
 import com.oddlyspaced.surge.app.customer.viewmodel.LocationType
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
@@ -37,7 +37,7 @@ class PickLocationFragment : Fragment(R.layout.fragment_pick_location) {
 
     private lateinit var binding: FragmentPickLocationBinding
 
-    private val vm: HomeViewModel by activityViewModels()
+    private val vm: CustomerViewModel by activityViewModels()
     private var currentAddress: Address? = null
     private val args: PickLocationFragmentArgs by navArgs()
 
