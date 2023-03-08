@@ -34,15 +34,8 @@ interface Api {
     @GET("/provider/services")
     suspend fun fetchServiceTags(): ArrayList<Service>
 
-    @GET("/provider/search")
-    suspend fun searchProviders(
-        @Query("limitCount") limitCount: Int,
-        @Query("limitDistance") limitDistance: Int,
-        @Query("pickupLat") pickupLat: Double,
-        @Query("pickupLon") pickupLon: Double,
-        @Query("dropLat") dropLat: Double,
-        @Query("dropLon") dropLon: Double,
-    ): ArrayList<Provider>
+    @POST("/provider/search")
+    suspend fun searchProviders(@Body params: SearchParameter): List<Provider>
 
     @POST("/provider/update/location")
     suspend fun updateProviderLocation(@Body location: LocationUpdateParameter): ResponseError
