@@ -4,6 +4,7 @@ import android.content.Context
 import android.location.Location
 import android.util.Log
 import android.widget.Toast
+import androidx.fragment.app.Fragment
 import com.freelapp.libs.locationfetcher.LocationFetcher
 import com.google.android.gms.auth.api.signin.internal.Storage
 import com.oddlyspaced.surge.app.common.AffinityConfiguration.Companion.SHARED_PREFERENCE_NAME
@@ -59,4 +60,12 @@ fun Context.readPreference(preference: StoragePreference): Any {
         DataType.INT -> this.getSharedPreferences(SHARED_PREFERENCE_NAME, Context.MODE_PRIVATE).getInt(preference.name, 0)
         DataType.STRING -> this.getSharedPreferences(SHARED_PREFERENCE_NAME, Context.MODE_PRIVATE).getString(preference.name, "") ?: ""
     }
+}
+
+fun Context.toast(msg: String) {
+    Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
+}
+
+fun Fragment.toast(msg: String) {
+    this.requireContext().toast(msg)
 }
