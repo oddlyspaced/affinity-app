@@ -43,12 +43,12 @@ class CustomerViewModel @Inject constructor(private val repo: ProviderRepository
         return data
     }
 
-    fun search(params: SearchParameter): LiveData<ArrayList<Provider>> {
-        val _search = MutableLiveData<ArrayList<Provider>>()
+    fun search(limitDistance: Int, serviceFilters: ArrayList<String>, pickupLocation: Location, dropLocation: Location, limitCount: Int = 10): MutableLiveData<List<Provider>> {
+        val data = MutableLiveData<List<Provider>>()
         CoroutineScope(Dispatchers.IO).launch {
-            _search.postValue(repo.search(params))
+            data.postValue(repo.search(limitDistance, serviceFilters, pickupLocation, dropLocation, limitCount))
         }
-        return _search
+        return data
     }
 
     fun ping(): LiveData<ResponseError> {
