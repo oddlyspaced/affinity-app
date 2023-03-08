@@ -126,7 +126,7 @@ class SearchFragment: Fragment(R.layout.fragment_search) {
         binding.map.controller.setZoom(AffinityConfiguration.DEFAULT_MAP_ZOOM)
     }
 
-    private fun addMarker(id: Int, point: GeoPoint, tint: Int, onMarkerClick: ((Marker, MapView) -> Boolean)) {
+    private fun addMarker(id: Int, point: GeoPoint, tint: Int, onMarkerClick: ((Marker, MapView) -> Boolean) = { _, _ -> false}) {
         if (!isAdded) {
             return
         }
@@ -147,7 +147,17 @@ class SearchFragment: Fragment(R.layout.fragment_search) {
     }
 
     private fun markProvider(provider: Provider) {
-        addMarker(provider.id, provider.location.asGeoPoint(), Color.BLACK, ) { _, _ -> false }
+        addMarker(provider.id, provider.location.asGeoPoint(), Color.BLACK, ) { _, _ ->
+            findNavController().navigate(
+                SearchFragmentDirections.actionSearchFragmentToProviderDetailsFragment(
+                    Providers(
+                        arrayListOf(provider)
+                    ),
+                    vm.selectedLocation[LocationType.PICKUP]!!.location
+                )
+            )
+            true
+        }
     }
 
     private suspend fun markUserLocation() {
@@ -159,7 +169,7 @@ class SearchFragment: Fragment(R.layout.fragment_search) {
                 Logger.d("ERROR: $error")
             }, { location ->
                 val userPoint = location.asGeoPoint()
-                addMarker(PickLocationFragment.MARKER_ID_USER, userPoint, Color.BLUE) { _, _ -> false}
+                addMarker(PickLocationFragment.MARKER_ID_USER, userPoint, Color.BLUE)
                 requireActivity().runOnUiThread {
                     binding.map.controller.setCenter(userPoint)
                 }
@@ -168,14 +178,14 @@ class SearchFragment: Fragment(R.layout.fragment_search) {
     }
 
     private fun markPickupLocation(point: GeoPoint) {
-        addMarker(PickLocationFragment.MARKER_ID_PICKUP, point, Color.RED) { _, _, -> false}
+        addMarker(PickLocationFragment.MARKER_ID_PICKUP, point, Color.RED)
         requireActivity().runOnUiThread {
             binding.map.controller.setCenter(point)
         }
     }
 
     private fun markDropLocation(point: GeoPoint) {
-        addMarker(PickLocationFragment.MARKER_ID_DROP, point, Color.GREEN) { _, _, -> false}
+        addMarker(PickLocationFragment.MARKER_ID_DROP, point, Color.GREEN)
         requireActivity().runOnUiThread {
             binding.map.controller.setCenter(point)
         }
