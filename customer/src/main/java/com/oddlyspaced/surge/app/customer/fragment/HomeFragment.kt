@@ -127,7 +127,7 @@ class HomeFragment: Fragment(R.layout.fragment_home) {
             }
         }
         binding.selectLocationDrop.apply {
-            txSelectLocation.text = "Select Drop Location"
+            txSelectLocation.text = "Select drop Location"
             imgLocation.setColorFilter(Color.GREEN)
             root.setOnClickListener {
                 findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToPickLocationFragment(LocationType.DROP))
