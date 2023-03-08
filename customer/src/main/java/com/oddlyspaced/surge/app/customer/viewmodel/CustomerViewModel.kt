@@ -35,13 +35,12 @@ class CustomerViewModel @Inject constructor(private val repo: ProviderRepository
     val selectedLocation = hashMapOf<LocationType, Address>()
     fun addressFromLocation(location: Location, zoom: Int) = locationRepository.address(location, zoom)
 
-    val services: LiveData<ArrayList<Service>>
-    get() {
-        val _services = MutableLiveData<ArrayList<Service>>()
+    fun fetchServices(): LiveData<ArrayList<Service>> {
+        val data = MutableLiveData<ArrayList<Service>>()
         CoroutineScope(Dispatchers.IO).launch {
-            _services.postValue(repo.services())
+            data.postValue(repo.services())
         }
-        return _services
+        return data
     }
 
     fun search(params: SearchParameter): LiveData<ArrayList<Provider>> {
