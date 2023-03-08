@@ -119,6 +119,11 @@ class HomeFragment: Fragment(R.layout.fragment_home) {
     }
 
     private fun init() {
+        binding.fabMarkCurrent.setOnClickListener {
+            CoroutineScope(Dispatchers.IO).launch {
+                markCurrentLocation()
+            }
+        }
         binding.selectLocationPickup.apply {
             txSelectLocation.text = "Select pickup location"
             imgLocation.setColorFilter(Color.RED)
