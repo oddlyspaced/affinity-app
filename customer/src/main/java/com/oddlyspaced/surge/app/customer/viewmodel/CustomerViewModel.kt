@@ -60,7 +60,8 @@ class CustomerViewModel @Inject constructor(private val repo: ProviderRepository
             catch (e: Exception) {
                 data.postValue(ResponseError("Unable to reach server", true))
                 Logger.d("Error in ping")
-                e.printStackTrace()            }
+                e.printStackTrace()
+            }
         }
         return data
     }
