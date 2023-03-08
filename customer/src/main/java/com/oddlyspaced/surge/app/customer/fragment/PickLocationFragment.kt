@@ -156,6 +156,7 @@ class PickLocationFragment : Fragment(R.layout.fragment_pick_location) {
     }
 
     private fun init() {
+        binding.txPickerTitle.text = "Select ${args.pickupType.name.lowercase()} location"
         binding.cardButtonSaveLocation.setOnClickListener {
             currentAddress?.let { address ->
                 homeViewModel.selectedLocation[args.pickupType] = address
