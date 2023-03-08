@@ -41,6 +41,8 @@ class PickLocationFragment : Fragment(R.layout.fragment_pick_location) {
     private var currentAddress: Address? = null
     private val args: PickLocationFragmentArgs by navArgs()
 
+    private var isLoadingAddress = false
+
     companion object {
         const val MARKER_ID_PICKUP = -1
         const val MARKER_ID_DROP = -2
@@ -91,7 +93,7 @@ class PickLocationFragment : Fragment(R.layout.fragment_pick_location) {
         }
     }
 
-    private fun addMarker(id: Int, point: GeoPoint, tint: Int, onMarkerClick: ((Marker, MapView) -> Boolean)) {
+    private fun addMarker(id: Int, point: GeoPoint, tint: Int) {
         if (!isAdded) {
             return
         }
@@ -104,7 +106,6 @@ class PickLocationFragment : Fragment(R.layout.fragment_pick_location) {
                 setAnchor(Marker.ANCHOR_BOTTOM, Marker.ANCHOR_BOTTOM)
                 icon = ContextCompat.getDrawable(requireContext(), com.oddlyspaced.surge.app.common.R.drawable.ic_location)
                     ?.apply { setTint(tint) }
-                setOnMarkerClickListener(onMarkerClick)
                 setInfoWindow(null)
             }
             binding.map.overlays.add(markers[id])
@@ -112,25 +113,25 @@ class PickLocationFragment : Fragment(R.layout.fragment_pick_location) {
     }
 
     private fun markProvider(id: Int, provider: Provider) {
-        addMarker(id, provider.location.asGeoPoint(), Color.BLACK, ) { _, _ -> false }
+        addMarker(id, provider.location.asGeoPoint(), Color.BLACK)
     }
 
     private fun markUserLocation(point: GeoPoint) {
-        addMarker(MARKER_ID_USER, point, Color.BLUE) {_, _ -> false}
+        addMarker(MARKER_ID_USER, point, Color.BLUE)
         requireActivity().runOnUiThread {
             binding.map.controller.setCenter(point)
         }
     }
 
     private fun markPickupLocation(point: GeoPoint) {
-        addMarker(MARKER_ID_PICKUP, point, Color.RED) {_, _, -> false}
+        addMarker(MARKER_ID_PICKUP, point, Color.RED)
         requireActivity().runOnUiThread {
             binding.map.controller.setCenter(point)
         }
     }
 
     private fun markDropLocation(point: GeoPoint) {
-        addMarker(MARKER_ID_DROP, point, Color.GREEN) {_, _, -> false}
+        addMarker(MARKER_ID_DROP, point, Color.GREEN)
         requireActivity().runOnUiThread {
             binding.map.controller.setCenter(point)
         }
@@ -158,10 +159,15 @@ class PickLocationFragment : Fragment(R.layout.fragment_pick_location) {
     private fun init() {
         binding.txPickerTitle.text = "Select ${args.pickupType.name.lowercase()} location"
         binding.cardButtonSaveLocation.setOnClickListener {
-            currentAddress?.let { address ->
-                vm.selectedLocation[args.pickupType] = address
+            if (isLoadingAddress) {
+                toast("Please wait while the address is being fetched")
             }
-            findNavController().popBackStack()
+            else {
+                currentAddress?.let { address ->
+                    vm.selectedLocation[args.pickupType] = address
+                }
+                findNavController().popBackStack()
+            }
         }
 
         vm.providers.observe(requireActivity()) { list ->
@@ -180,8 +186,10 @@ class PickLocationFragment : Fragment(R.layout.fragment_pick_location) {
     }
 
     private fun setAddressForLocation(location: Location) {
+        isLoadingAddress = true
         binding.txPickerAddress.text = "Loading..."
         vm.addressFromLocation(location, binding.map.zoomLevelDouble.toInt()).observe(requireActivity()) { result ->
+            isLoadingAddress = false
             binding.txPickerAddress.text = result.displayName + "\n" + "lat: ${location.lat}, lon: ${location.lon}"
             currentAddress = Address(location, result.displayName ?: "${location.lat}, ${location.lon}")
         }
