@@ -13,10 +13,7 @@ import com.google.android.material.chip.Chip
 import com.google.android.material.slider.Slider
 import com.google.android.material.slider.Slider.OnSliderTouchListener
 import com.oddlyspaced.surge.app.common.*
-import com.oddlyspaced.surge.app.common.modal.Provider
-import com.oddlyspaced.surge.app.common.modal.Providers
-import com.oddlyspaced.surge.app.common.modal.SearchParameter
-import com.oddlyspaced.surge.app.common.modal.asGeoPoint
+import com.oddlyspaced.surge.app.common.modal.*
 import com.oddlyspaced.surge.app.customer.R
 import com.oddlyspaced.surge.app.customer.databinding.FragmentSearchBinding
 import com.oddlyspaced.surge.app.customer.viewmodel.CustomerViewModel
@@ -101,14 +98,10 @@ class SearchFragment: Fragment(R.layout.fragment_search) {
                 val pickup = vm.selectedLocation[LocationType.PICKUP]!!.location
                 val drop = vm.selectedLocation[LocationType.DROP]!!.location
                 vm.search(
-                    SearchParameter(
-                        10,
-                        binding.sliderSearchDistance.value.toInt(),
-                        pickup.lat,
-                        pickup.lon,
-                        drop.lat,
-                        drop.lon,
-                    )
+                    binding.sliderSearchDistance.value.toInt(),
+                    arrayListOf(),
+                    pickup,
+                    drop,
                 ).observe(requireActivity()) {
                     Logger.d("Search res: ${it.size} \n $it.toStr")
                     findNavController().navigate(SearchFragmentDirections.actionSearchFragmentToProviderDetailsFragment(Providers(it), markers[PickLocationFragment.MARKER_ID_USER]!!.position!!.asLocation()))
