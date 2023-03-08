@@ -66,6 +66,8 @@ class SearchFragment: Fragment(R.layout.fragment_search) {
 
         })
 
+        createCircleAroundPoint(vm.selectedLocation[LocationType.PICKUP]!!.location.asGeoPoint(), 1.0)
+
         vm.providers.observe(requireActivity()) { list ->
             list.forEach { provider ->
                 markProvider(provider)
