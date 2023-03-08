@@ -5,5 +5,5 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class Providers(
-    val providers: ArrayList<Provider>
+    val providers: List<Provider>
 ): Parcelable
