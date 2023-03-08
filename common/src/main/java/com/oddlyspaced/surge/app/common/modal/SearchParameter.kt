@@ -6,9 +6,8 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 class SearchParameter(
     val limitCount: Int = 10,
-    val limitDistance: Int = 10,
-    val pickupLat: Double,
-    val pickupLon: Double,
-    val dropLat: Double,
-    val dropLon: Double,
+    val limitDistance: Int,
+    val serviceFilters: ArrayList<String>,
+    val pickupLocation: Location,
+    val dropLocation: Location,
 ): Parcelable
