@@ -36,7 +36,7 @@ import org.osmdroid.views.overlay.Marker
 class HomeFragment: Fragment(R.layout.fragment_home) {
 
     private lateinit var binding: FragmentHomeBinding
-    private val homeViewModel: HomeViewModel by activityViewModels()
+    private val vm: HomeViewModel by activityViewModels()
 
     private lateinit var userLocationMarker: Marker
 
@@ -138,7 +138,7 @@ class HomeFragment: Fragment(R.layout.fragment_home) {
             findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToSearchFragment())
         }
 
-        homeViewModel.providers.observe(requireActivity()) { list ->
+        vm.providers.observe(requireActivity()) { list ->
             list.forEach { provider ->
                 markProvider(provider)
             }
@@ -152,7 +152,7 @@ class HomeFragment: Fragment(R.layout.fragment_home) {
         super.onResume()
         Logger.d("Resumed Home Fragment")
 
-        homeViewModel.selectedLocation[LocationType.PICKUP]?.let { address ->
+        vm.selectedLocation[LocationType.PICKUP]?.let { address ->
             binding.selectLocationPickup.txSelectLocation.text = address.address
             pickupMarker?.let { pickupMarker ->
                 binding.map.overlays.remove(pickupMarker)
@@ -165,7 +165,7 @@ class HomeFragment: Fragment(R.layout.fragment_home) {
             binding.map.overlays.add(pickupMarker)
         }
 
-        homeViewModel.selectedLocation[LocationType.DROP]?.let { address ->
+        vm.selectedLocation[LocationType.DROP]?.let { address ->
             binding.selectLocationDrop.txSelectLocation.text = address.address
             dropMarker?.let { dropMark ->
                 binding.map.overlays.remove(dropMark)

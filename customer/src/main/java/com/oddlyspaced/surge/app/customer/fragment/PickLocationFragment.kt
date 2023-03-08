@@ -37,7 +37,7 @@ class PickLocationFragment : Fragment(R.layout.fragment_pick_location) {
 
     private lateinit var binding: FragmentPickLocationBinding
 
-    private val homeViewModel: HomeViewModel by activityViewModels()
+    private val vm: HomeViewModel by activityViewModels()
     private var currentAddress: Address? = null
     private val args: PickLocationFragmentArgs by navArgs()
 
@@ -159,29 +159,29 @@ class PickLocationFragment : Fragment(R.layout.fragment_pick_location) {
         binding.txPickerTitle.text = "Select ${args.pickupType.name.lowercase()} location"
         binding.cardButtonSaveLocation.setOnClickListener {
             currentAddress?.let { address ->
-                homeViewModel.selectedLocation[args.pickupType] = address
+                vm.selectedLocation[args.pickupType] = address
             }
             findNavController().popBackStack()
         }
 
-        homeViewModel.providers.observe(requireActivity()) { list ->
+        vm.providers.observe(requireActivity()) { list ->
             list.forEach { provider ->
                 markProvider(provider.id, provider)
             }
         }
 
-        homeViewModel.selectedLocation[LocationType.PICKUP]?.let { pickupAddress ->
+        vm.selectedLocation[LocationType.PICKUP]?.let { pickupAddress ->
             markPickupLocation(pickupAddress.location.asGeoPoint())
         }
 
-        homeViewModel.selectedLocation[LocationType.DROP]?.let { dropAddress ->
+        vm.selectedLocation[LocationType.DROP]?.let { dropAddress ->
             markDropLocation(dropAddress.location.asGeoPoint())
         }
     }
 
     private fun setAddressForLocation(location: Location) {
         binding.txPickerAddress.text = "Loading..."
-        homeViewModel.addressFromLocation(location, binding.map.zoomLevelDouble.toInt()).observe(requireActivity()) { result ->
+        vm.addressFromLocation(location, binding.map.zoomLevelDouble.toInt()).observe(requireActivity()) { result ->
             binding.txPickerAddress.text = result.displayName + "\n" + "lat: ${location.lat}, lon: ${location.lon}"
             currentAddress = Address(location, result.displayName ?: "${location.lat}, ${location.lon}")
         }

@@ -2,16 +2,13 @@ package com.oddlyspaced.surge.app.customer.fragment
 
 import android.graphics.Color
 import android.os.Bundle
-import android.preference.PreferenceManager
 import android.view.View
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
-import com.freelapp.libs.locationfetcher.LocationFetcher
 import com.freelapp.libs.locationfetcher.locationFetcher
-import com.google.android.gms.location.LocationRequest
 import com.google.android.material.chip.Chip
 import com.google.android.material.slider.Slider
 import com.google.android.material.slider.Slider.OnSliderTouchListener
@@ -20,7 +17,6 @@ import com.oddlyspaced.surge.app.common.modal.Provider
 import com.oddlyspaced.surge.app.common.modal.Providers
 import com.oddlyspaced.surge.app.common.modal.SearchParameter
 import com.oddlyspaced.surge.app.common.modal.asGeoPoint
-import com.oddlyspaced.surge.app.customer.BuildConfig
 import com.oddlyspaced.surge.app.customer.R
 import com.oddlyspaced.surge.app.customer.databinding.FragmentSearchBinding
 import com.oddlyspaced.surge.app.customer.viewmodel.HomeViewModel
@@ -29,20 +25,17 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import org.osmdroid.config.Configuration
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.CustomZoomButtonsController
 import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Marker
 import org.osmdroid.views.overlay.Polygon
-import kotlin.time.Duration.Companion.minutes
-import kotlin.time.Duration.Companion.seconds
 
 class SearchFragment: Fragment(R.layout.fragment_search) {
 
     private lateinit var binding: FragmentSearchBinding
-    private val homeViewModel: HomeViewModel by activityViewModels()
+    private val vm: HomeViewModel by activityViewModels()
     private val markers = hashMapOf<Int, Marker>()
     private val locationFetcher = locationFetcher("We need permission to fetch location") {
         this.applyFrom(AffinityConfiguration.locationFetcherGlobalConfig)
@@ -68,12 +61,12 @@ class SearchFragment: Fragment(R.layout.fragment_search) {
             override fun onStartTrackingTouch(slider: Slider) {}
 
             override fun onStopTrackingTouch(slider: Slider) {
-                createCircleAroundPoint(homeViewModel.selectedLocation[LocationType.PICKUP]!!.location.asGeoPoint(), slider.value.toDouble())
+                createCircleAroundPoint(vm.selectedLocation[LocationType.PICKUP]!!.location.asGeoPoint(), slider.value.toDouble())
             }
 
         })
 
-        homeViewModel.providers.observe(requireActivity()) { list ->
+        vm.providers.observe(requireActivity()) { list ->
             list.forEach { provider ->
                 markProvider(provider)
             }
@@ -83,7 +76,7 @@ class SearchFragment: Fragment(R.layout.fragment_search) {
             text = "Loading..."
         })
 
-        homeViewModel.services.observe(requireActivity()) { services ->
+        vm.services.observe(requireActivity()) { services ->
             binding.chipgroupSearchService.removeAllViews()
             services.forEach { service ->
                 binding.chipgroupSearchService.addView(Chip(requireContext()).apply {
@@ -93,19 +86,19 @@ class SearchFragment: Fragment(R.layout.fragment_search) {
             }
         }
 
-        homeViewModel.selectedLocation[LocationType.PICKUP]?.let { pickupAddress ->
+        vm.selectedLocation[LocationType.PICKUP]?.let { pickupAddress ->
             markPickupLocation(pickupAddress.location.asGeoPoint())
         }
 
-        homeViewModel.selectedLocation[LocationType.DROP]?.let { dropAddress ->
+        vm.selectedLocation[LocationType.DROP]?.let { dropAddress ->
             markDropLocation(dropAddress.location.asGeoPoint())
         }
 
         binding.cardHomeSearch.setOnClickListener {
             try {
-                val pickup = homeViewModel.selectedLocation[LocationType.PICKUP]!!.location
-                val drop = homeViewModel.selectedLocation[LocationType.DROP]!!.location
-                homeViewModel.search(
+                val pickup = vm.selectedLocation[LocationType.PICKUP]!!.location
+                val drop = vm.selectedLocation[LocationType.DROP]!!.location
+                vm.search(
                     SearchParameter(
                         10,
                         binding.sliderSearchDistance.value.toInt(),
