@@ -20,13 +20,14 @@ class ProviderRepository @Inject constructor(private val api: Api) {
     suspend fun providers() = api.fetchProviders(status = ProviderStatus.ACTIVE)
     suspend fun providersUnfiltered() = api.fetchProviders(status = ProviderStatus.UNDEFINED)
     suspend fun services() = api.fetchServiceTags()
-    suspend fun search(params: SearchParameter) = api.searchProviders(
-        params.limitCount,
-        params.limitDistance,
-        params.pickupLat,
-        params.pickupLon,
-        params.dropLat,
-        params.dropLon,
+    suspend fun search(limitDistance: Int, serviceFilters: ArrayList<String>, pickupLocation: Location, dropLocation: Location, limitCount: Int = 10) = api.searchProviders(
+        SearchParameter(
+            limitCount,
+            limitDistance,
+            serviceFilters,
+            pickupLocation,
+            dropLocation
+        )
     )
     suspend fun provider(id: Int) = api.getProvider(id)
     suspend fun updateProviderStatus(id: Int, status: ProviderStatus) = api.updateProviderStatus(StatusUpdateParameter(id, status))
