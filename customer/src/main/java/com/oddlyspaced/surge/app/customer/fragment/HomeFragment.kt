@@ -1,7 +1,10 @@
 package com.oddlyspaced.surge.app.customer.fragment
 
 import android.graphics.Color
+import android.location.Location
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.preference.PreferenceManager
 import android.view.View
 import android.widget.Toast
@@ -35,6 +38,7 @@ class HomeFragment: Fragment(R.layout.fragment_home) {
     private lateinit var binding: FragmentHomeBinding
     private val vm: CustomerViewModel by activityViewModels()
 
+    private lateinit var currentLocation: Location
     private lateinit var userLocationMarker: Marker
 
     private val locationFetcher = locationFetcher("We need your permission to use your location for showing nearby items") {
@@ -46,8 +50,18 @@ class HomeFragment: Fragment(R.layout.fragment_home) {
 
         initOSMDroid()
         CoroutineScope(Dispatchers.IO).launch {
-            markCurrentLocation()
+            locationFetcher.location.collectLatest {
+                it.fold({ error ->
+                    Logger.d("Error: $error")
+                }, { location ->
+                    currentLocation = location
+                    requireActivity().runOnUiThread {
+                        markCurrentLocation(true)
+                    }
+                })
+            }
         }
+        pollCurrentLocation()
         init()
     }
 
@@ -71,30 +85,50 @@ class HomeFragment: Fragment(R.layout.fragment_home) {
         binding.map.controller.setZoom(AffinityConfiguration.DEFAULT_MAP_ZOOM)
     }
 
-    private suspend fun markCurrentLocation() {
-        locationFetcher.location.collectLatest {
-            it.fold({ error ->
-                toast("Error occurred while fetching location")
-                Logger.d("ERROR: $error")
-            }, { location ->
-                val userPoint = location.asGeoPoint()
-                if (this@HomeFragment::userLocationMarker.isInitialized) {
-                    requireActivity().runOnUiThread {
-                        binding.map.overlays.remove(userLocationMarker)
-                    }
+    private fun pollCurrentLocation() {
+        Handler(Looper.getMainLooper()).postDelayed({
+            CoroutineScope(Dispatchers.IO).launch {
+                Logger.d("wow wow")
+                locationFetcher.location.collectLatest {
+                    it.fold({ error ->
+                        Logger.d("Error: $error")
+                    }, { location ->
+                        Logger.d("Fetched location")
+                        currentLocation = location
+                        requireActivity().runOnUiThread {
+                            markCurrentLocation()
+                        }
+                    })
                 }
-                userLocationMarker = Marker(binding.map).apply {
-                    position = userPoint
-                    setAnchor(Marker.ANCHOR_BOTTOM, Marker.ANCHOR_BOTTOM)
-                    icon = ContextCompat.getDrawable(requireContext(), com.oddlyspaced.surge.app.common.R.drawable.ic_location)?.apply { setTint(
-                        Color.BLUE) }
-                    setInfoWindow(null)
-                }
-                requireActivity().runOnUiThread {
-                    binding.map.controller.setCenter(userPoint)
-                    binding.map.overlays.add(userLocationMarker)
-                }
-            })
+            }
+            pollCurrentLocation()
+        }, 60 * 1000)
+    }
+
+    private fun markCurrentLocation(shouldSetCenter: Boolean = false) {
+        if (!isVisible)
+            return
+        if (!this@HomeFragment::currentLocation.isInitialized) {
+            toast("Current location unavailable")
+            return
+        }
+        val userPoint = currentLocation.asGeoPoint()
+        if (this@HomeFragment::userLocationMarker.isInitialized) {
+            requireActivity().runOnUiThread {
+                binding.map.overlays.remove(userLocationMarker)
+            }
+        }
+        userLocationMarker = Marker(binding.map).apply {
+            position = userPoint
+            setAnchor(Marker.ANCHOR_BOTTOM, Marker.ANCHOR_BOTTOM)
+            icon = ContextCompat.getDrawable(requireContext(), com.oddlyspaced.surge.app.common.R.drawable.ic_location)?.apply { setTint(Color.BLUE) }
+            setInfoWindow(null)
+        }
+        requireActivity().runOnUiThread {
+            if (shouldSetCenter) {
+                binding.map.controller.setCenter(userPoint)
+            }
+            binding.map.overlays.add(userLocationMarker)
         }
     }
 
@@ -117,9 +151,7 @@ class HomeFragment: Fragment(R.layout.fragment_home) {
 
     private fun init() {
         binding.fabMarkCurrent.setOnClickListener {
-            CoroutineScope(Dispatchers.IO).launch {
-                markCurrentLocation()
-            }
+            markCurrentLocation(true)
         }
         binding.selectLocationPickup.apply {
             txSelectLocation.text = "Select pickup location"
