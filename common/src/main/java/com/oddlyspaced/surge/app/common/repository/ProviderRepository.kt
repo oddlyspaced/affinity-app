@@ -4,6 +4,9 @@ import com.oddlyspaced.surge.app.common.modal.*
 import com.oddlyspaced.surge.app.common.retrofit.Api
 import javax.inject.Inject
 
+/**
+ * repository class to hold method calls to endpoints related to provider on backend
+ */
 class ProviderRepository @Inject constructor(private val api: Api) {
     suspend fun addProvider(id: Int, name: String, phone: PhoneNumber, location: Location, services: ArrayList<String>, areaServed: AreaServed) = api.addProvider(
         Provider(

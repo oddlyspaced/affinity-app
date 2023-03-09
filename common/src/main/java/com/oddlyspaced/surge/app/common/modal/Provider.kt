@@ -3,17 +3,23 @@ package com.oddlyspaced.surge.app.common.modal
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
-
 /**
- * data class to hold the properties of a Provider
+ * modal class to hold the properties of a Provider
+ * @param id id of provider
+ * @param name of provider
+ * @param phone phone number of provider
+ * @param location location of provider
+ * @param services services of provider
+ * @param areaServed area served by provider
+ * @param status status of provider [ACTIVE by default]
  */
 @Parcelize
 data class Provider(
-    val id: Int = -1, // unique id for provider
-    val name: String, // name of provider
-    val phone: PhoneNumber, // phone number of provider
+    val id: Int = -1,
+    val name: String,
+    val phone: PhoneNumber,
     val location: Location,
-    val services: ArrayList<String>, // tags of all the services the provider offers
-    var areaServed: AreaServed, // area served by provider
+    val services: ArrayList<String>,
+    var areaServed: AreaServed,
     var status: ProviderStatus,
 ): Parcelable

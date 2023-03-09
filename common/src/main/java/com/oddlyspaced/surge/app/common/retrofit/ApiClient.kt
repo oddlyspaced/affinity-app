@@ -8,6 +8,9 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 
+/**
+ * client handler for affinity backend api client
+ */
 class ApiClient {
     private lateinit var client: Api
     fun getApiClient(): Api {

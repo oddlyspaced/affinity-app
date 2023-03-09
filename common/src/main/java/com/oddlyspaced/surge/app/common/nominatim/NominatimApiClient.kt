@@ -6,6 +6,9 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 
+/**
+ * client provider for nominatim api
+ */
 class NominatimApiClient {
     private lateinit var client: NominatimApi
     fun getApiClient(): NominatimApi {

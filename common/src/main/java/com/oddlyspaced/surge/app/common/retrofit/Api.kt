@@ -6,6 +6,9 @@ import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Query
 
+/**
+ * api interface for affinity central backend api
+ */
 interface Api {
 
     @GET("/ping")

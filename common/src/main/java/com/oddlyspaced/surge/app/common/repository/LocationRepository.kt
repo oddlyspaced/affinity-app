@@ -10,8 +10,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+/**
+ * repository class to hold method calls to endpoint related to nominatim api
+ */
 class LocationRepository @Inject constructor(private val api: NominatimApi) {
-
     fun address(location: Location, zoom: Int): LiveData<ReverseSearchResult> {
         val data = MutableLiveData<ReverseSearchResult>()
         CoroutineScope(Dispatchers.IO).launch {

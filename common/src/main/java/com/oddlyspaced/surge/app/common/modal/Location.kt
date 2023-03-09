@@ -6,7 +6,9 @@ import org.osmdroid.util.GeoPoint
 import kotlin.math.*
 
 /**
- * data class to hold a location representation
+ * modal class to hold a location representation
+ * @param lat latitude
+ * @param lon longitude
  */
 @Parcelize
 data class Location(
@@ -14,6 +16,9 @@ data class Location(
     val lon: Double,
 ): Parcelable
 
+/**
+ * extension function to calculate real world distance to another location
+ */
 fun Location.distanceTo(point: Location): Double {
     val dLat = deg2rad(abs(this.lat - point.lat))
     val dLon = deg2rad(abs(this.lon - point.lon))
@@ -23,7 +28,10 @@ fun Location.distanceTo(point: Location): Double {
     return 6371 * c
 }
 
-fun deg2rad(deg: Double): Double {
+/**
+ * helper function to convert degree to radian
+ */
+private fun deg2rad(deg: Double): Double {
     return deg * (Math.PI / 180.0)
 }
 

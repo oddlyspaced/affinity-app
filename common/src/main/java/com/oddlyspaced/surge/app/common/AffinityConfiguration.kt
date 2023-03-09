@@ -5,6 +5,9 @@ import com.google.android.gms.location.LocationRequest
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
 
+/**
+ * configuration class for various different params
+ */
 class AffinityConfiguration {
     companion object {
         private const val API_URL_LINK = "http://srivalab-compute.cse.iitk.ac.in"
