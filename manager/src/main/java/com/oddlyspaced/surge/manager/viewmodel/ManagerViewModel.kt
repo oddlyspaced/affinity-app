@@ -22,16 +22,16 @@ class ManagerViewModel @Inject constructor(private val repo: ProviderRepository,
 
     fun addressFromLocation(location: Location, zoom: Int) = locationRepository.address(location, zoom)
 
-    fun addProvider(name: String, phone: PhoneNumber, location: Location, services: ArrayList<String>, areaServed: AreaServed, id: Int = -1): LiveData<ResponseError> {
-        val data = MutableLiveData<ResponseError>()
+    fun addProvider(name: String, phone: PhoneNumber, location: Location, services: ArrayList<String>, areaServed: AreaServed, id: Int = -1): LiveData<ServerResponse> {
+        val data = MutableLiveData<ServerResponse>()
         CoroutineScope(Dispatchers.IO).launch {
             data.postValue(repo.addProvider(id, name, phone, location, services, areaServed))
         }
         return data
     }
 
-    fun deleteProvider(id: Int): LiveData<ResponseError> {
-        val data = MutableLiveData<ResponseError>()
+    fun deleteProvider(id: Int): LiveData<ServerResponse> {
+        val data = MutableLiveData<ServerResponse>()
         CoroutineScope(Dispatchers.IO).launch {
             data.postValue(repo.deleteProvider(id))
         }
@@ -46,8 +46,8 @@ class ManagerViewModel @Inject constructor(private val repo: ProviderRepository,
         return data
     }
 
-    fun updateProviderStatus(id: Int, status: ProviderStatus): LiveData<ResponseError> {
-        val data = MutableLiveData<ResponseError>()
+    fun updateProviderStatus(id: Int, status: ProviderStatus): LiveData<ServerResponse> {
+        val data = MutableLiveData<ServerResponse>()
         CoroutineScope(Dispatchers.IO).launch {
             data.postValue(repo.updateProviderStatus(id, status))
         }
@@ -70,14 +70,14 @@ class ManagerViewModel @Inject constructor(private val repo: ProviderRepository,
         return data
     }
 
-    fun ping(): LiveData<ResponseError> {
-        val data = MutableLiveData<ResponseError>()
+    fun ping(): LiveData<ServerResponse> {
+        val data = MutableLiveData<ServerResponse>()
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 data.postValue(generalRepository.ping())
             }
             catch (e: Exception) {
-                data.postValue(ResponseError("Unable to reach server", true))
+                data.postValue(ServerResponse("Unable to reach server", true))
                 Logger.d("Error in ping")
                 e.printStackTrace()            }
         }
