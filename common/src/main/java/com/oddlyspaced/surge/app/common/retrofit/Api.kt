@@ -12,13 +12,13 @@ import retrofit2.http.Query
 interface Api {
 
     @GET("/ping")
-    suspend fun ping(): ResponseError
+    suspend fun ping(): ServerResponse
 
     @POST("/provider/add")
-    suspend fun addProvider(@Body provider: Provider): ResponseError
+    suspend fun addProvider(@Body provider: Provider): ServerResponse
 
     @POST("/provider/remove")
-    suspend fun removeProvider(@Query("id") id: Int): ResponseError
+    suspend fun removeProvider(@Query("id") id: Int): ServerResponse
 
     @GET("/provider/all")
     suspend fun fetchProviders(@Query("status") status: ProviderStatus): List<Provider>
@@ -32,7 +32,7 @@ interface Api {
     suspend fun authenticateProvider(
         @Query("id") id: Int,
         @Query("password") password: String,
-    ): ResponseError
+    ): ServerResponse
 
     @GET("/provider/services")
     suspend fun fetchServiceTags(): ArrayList<Service>
@@ -41,11 +41,11 @@ interface Api {
     suspend fun searchProviders(@Body params: SearchParameter): List<Provider>
 
     @POST("/provider/update/location")
-    suspend fun updateProviderLocation(@Body location: LocationUpdateParameter): ResponseError
+    suspend fun updateProviderLocation(@Body location: LocationUpdateParameter): ServerResponse
 
     @POST("/provider/update/area")
-    suspend fun updateProviderServedArea(@Body area: AreaUpdateParameter): ResponseError
+    suspend fun updateProviderServedArea(@Body area: AreaUpdateParameter): ServerResponse
 
     @POST("/provider/update/status")
-    suspend fun updateProviderStatus(@Body status: StatusUpdateParameter): ResponseError
+    suspend fun updateProviderStatus(@Body status: StatusUpdateParameter): ServerResponse
 }
