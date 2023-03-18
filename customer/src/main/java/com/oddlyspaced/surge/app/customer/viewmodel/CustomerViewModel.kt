@@ -51,14 +51,14 @@ class CustomerViewModel @Inject constructor(private val repo: ProviderRepository
         return data
     }
 
-    fun ping(): LiveData<ResponseError> {
-        val data = MutableLiveData<ResponseError>()
+    fun ping(): LiveData<ServerResponse> {
+        val data = MutableLiveData<ServerResponse>()
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 data.postValue(generalRepository.ping())
             }
             catch (e: Exception) {
-                data.postValue(ResponseError("Unable to reach server", true))
+                data.postValue(ServerResponse("Unable to reach server", true))
                 Logger.d("Error in ping")
                 e.printStackTrace()
             }
