@@ -33,53 +33,53 @@ class ProviderViewModel @Inject constructor(private val repo: ProviderRepository
         return data
     }
 
-    fun updateProviderStatus(id: Int, status: ProviderStatus): LiveData<ResponseError> {
-        val data = MutableLiveData<ResponseError>()
+    fun updateProviderStatus(id: Int, status: ProviderStatus): LiveData<ServerResponse> {
+        val data = MutableLiveData<ServerResponse>()
         CoroutineScope(Dispatchers.IO).launch {
             data.postValue(repo.updateProviderStatus(id, status))
         }
         return data
     }
 
-    fun updateProviderLocation(id: Int, location: Location): LiveData<ResponseError> {
-        val data = MutableLiveData<ResponseError>()
+    fun updateProviderLocation(id: Int, location: Location): LiveData<ServerResponse> {
+        val data = MutableLiveData<ServerResponse>()
         CoroutineScope(Dispatchers.IO).launch {
             data.postValue(repo.updateProviderLocation(id, location))
         }
         return data
     }
 
-    fun updateProviderAreaServed(id: Int, areaServed: AreaServed): LiveData<ResponseError> {
-        val data = MutableLiveData<ResponseError>()
+    fun updateProviderAreaServed(id: Int, areaServed: AreaServed): LiveData<ServerResponse> {
+        val data = MutableLiveData<ServerResponse>()
         CoroutineScope(Dispatchers.IO).launch {
             data.postValue(repo.updateProviderServedArea(id, areaServed))
         }
         return data
     }
 
-    fun ping(): LiveData<ResponseError> {
-        val data = MutableLiveData<ResponseError>()
+    fun ping(): LiveData<ServerResponse> {
+        val data = MutableLiveData<ServerResponse>()
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 data.postValue(generalRepository.ping())
             }
             catch (e: Exception) {
-                data.postValue(ResponseError("Unable to reach server", true))
+                data.postValue(ServerResponse("Unable to reach server", true))
                 Logger.d("Error in ping")
                 e.printStackTrace()            }
         }
         return data
     }
 
-    fun authenticate(id: Int, password: String): LiveData<ResponseError> {
-        val data = MutableLiveData<ResponseError>()
+    fun authenticate(id: Int, password: String): LiveData<ServerResponse> {
+        val data = MutableLiveData<ServerResponse>()
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 data.postValue(repo.authenticateProvider(id, password))
             }
             catch (e: Exception) {
                 e.printStackTrace()
-                data.postValue(ResponseError("Unable to login", error = true))
+                data.postValue(ServerResponse("Unable to login", error = true))
             }
         }
         return data
