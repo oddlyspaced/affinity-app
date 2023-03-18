@@ -9,7 +9,7 @@ import kotlinx.parcelize.Parcelize
  * @param error boolean to represent if the api call was successful
  */
 @Parcelize
-data class ResponseError(
+data class ServerResponse(
     val message: String?,
     val error: Boolean = true,
 ): Parcelable
