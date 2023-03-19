@@ -48,7 +48,7 @@ fun LocationFetcher.Config.applyFrom(config: LocationFetcher.Config) {
 }
 
 /**
- * util method that saves a preference and then sends a broadcast that the preference is updated
+ * util method that saves a preference
  * @param preference: the preference to update
  * @param value: the value to save
  */
@@ -77,9 +77,5 @@ fun Context.readPreference(preference: StoragePreference): Any {
 /**
  * extensions for toast messages from any context
  */
-fun Context.toast(msg: String) {
-    Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
-}
-fun Fragment.toast(msg: String) {
-    this.requireContext().toast(msg)
-}
+fun Context.toast(msg: String) = Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
+fun Fragment.toast(msg: String) = this.requireContext().toast(msg)
