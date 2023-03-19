@@ -13,12 +13,18 @@ import com.oddlyspaced.surge.app.common.modal.pref.StoragePreference
 import org.osmdroid.api.IGeoPoint
 import org.osmdroid.util.GeoPoint
 
+/**
+ * tiny wrapper for logging statements
+ */
 object Logger {
     fun d(msg: String) {
         Log.d("Affinity", msg)
     }
 }
 
+/**
+ * location wrappers for various use cases
+ */
 fun Location?.asGeoPoint() = GeoPoint(this?.latitude ?: 0.0, this?.longitude ?: 0.0)
 fun IGeoPoint?.asGeoPoint() = GeoPoint(this?.latitude ?: 0.0, this?.longitude ?: 0.0)
 fun Context.toast(text: String, length: Int = Toast.LENGTH_SHORT) {
@@ -26,6 +32,9 @@ fun Context.toast(text: String, length: Int = Toast.LENGTH_SHORT) {
 }
 fun GeoPoint.asLocation() = com.oddlyspaced.surge.app.common.modal.Location(this.latitude, this.longitude)
 
+/**
+ * location fetcher library config
+ */
 fun LocationFetcher.Config.applyFrom(config: LocationFetcher.Config) {
     this.fastestInterval = config.fastestInterval
     this.interval = config.interval
@@ -54,6 +63,9 @@ fun Context.savePreference(preference: StoragePreference, value: Any) {
     }
 }
 
+/**
+ * util method that reads a preference from storage
+ */
 fun Context.readPreference(preference: StoragePreference): Any {
     return when(preference.dataType) {
         DataType.BOOLEAN -> this.getSharedPreferences(SHARED_PREFERENCE_NAME, Context.MODE_PRIVATE).getBoolean(preference.name, false)
@@ -62,10 +74,12 @@ fun Context.readPreference(preference: StoragePreference): Any {
     }
 }
 
+/**
+ * extensions for toast messages from any context
+ */
 fun Context.toast(msg: String) {
     Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
 }
-
 fun Fragment.toast(msg: String) {
     this.requireContext().toast(msg)
 }
