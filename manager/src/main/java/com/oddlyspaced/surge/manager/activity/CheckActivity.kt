@@ -15,6 +15,9 @@ import com.oddlyspaced.surge.app.common.databinding.ActivityCheckBinding
 import com.oddlyspaced.surge.manager.viewmodel.ManagerViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
+/**
+ * entry point for app. ensures the server is reachable and handles location permission status
+ */
 @AndroidEntryPoint
 class CheckActivity : AppCompatActivity() {
 

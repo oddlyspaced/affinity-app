@@ -36,6 +36,9 @@ import org.osmdroid.views.overlay.*
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
 
+/**
+ * fragment to pick location for provider information
+ */
 class EditSourceLocationFragment: Fragment(R.layout.fragment_edit_source_location) {
 
     private lateinit var binding: FragmentEditSourceLocationBinding

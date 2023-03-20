@@ -28,6 +28,10 @@ import org.osmdroid.views.overlay.Marker
 import org.osmdroid.views.overlay.OverlayItem
 import org.osmdroid.views.overlay.Polygon
 
+/**
+ * fragment for handling the information of any provider.
+ * if a provider id is passes in the nav arguments then the information of that provider is loaded and set in the fragment fields.
+ */
 @AndroidEntryPoint
 class AddEditFragment: Fragment(R.layout.fragment_add_edit) {
 

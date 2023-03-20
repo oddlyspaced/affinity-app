@@ -17,6 +17,9 @@ import com.oddlyspaced.surge.manager.databinding.FragmentHomeBinding
 import com.oddlyspaced.surge.manager.viewmodel.ManagerViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
+/**
+ * main screen for the app
+ */
 @AndroidEntryPoint
 class HomeFragment : Fragment(R.layout.fragment_home) {
 
